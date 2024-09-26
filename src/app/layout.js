@@ -1,12 +1,12 @@
-'use client';
-import { Inter } from 'next/font/google';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+"use client";
+import { Inter } from "next/font/google";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 // import Layout from './components/Layout';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 const theme = createTheme();
 
@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Navbar /> 
+          <Navbar />
           {children}
         </ThemeProvider>
       </body>
