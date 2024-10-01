@@ -1,4 +1,4 @@
-"use client"; // Mark this component as a client component
+"use client";
 import { useRouter } from "next/router";
 import * as React from "react";
 import { styled } from "@mui/material/styles";
@@ -12,38 +12,45 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   display: "flex",
   alignItems: "center",
-  borderRadius: theme.shape.borderRadius,
+  borderRadius: "20px", // Increase for a more rounded, modern look
   boxShadow: theme.shadows[3],
-  transition: "0.3s ease-in-out",
+  transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
   "&:hover": {
-    boxShadow: theme.shadows[6],
+    transform: "scale(1.05)", // Subtle scaling effect on hover
+    boxShadow: theme.shadows[6], // Enhanced shadow on hover
+    backgroundColor: "#e0f7fa", // Lighter color on hover
   },
 }));
 
 // Main Page for showing all terminals
 export default function TerminalsPage() {
-  // const [isClient, setIsClient] = useState(false);
-  // const router = useRouter();
-  // useEffect(() => {
-  //   setIsClient(true);
-  // }, []);
-
-  // if (!isClient) return null;
-
   const terminals = [
     {
       name: "Guzelyurt Terminal",
       description:
         "A hub for major bus routes connecting the capital to other cities.",
-      image: "/nicosia.jpg",
+      image: "/images/terminal.png",
     },
     {
       name: "Lefke Terminal",
       description:
         "Key terminal serving routes to and from Famagusta, a historic port city.",
-      image: "/famagusta.jpg",
+      image: "/images/terminal.png",
+    },
+    {
+      name: "Girne Terminal",
+      description:
+        "A hub for major bus routes connecting the capital to other cities.",
+      image: "/images/terminal.png",
+    },
+    {
+      name: "Nicosia Terminal",
+      description:
+        "Key terminal serving routes to and from Famagusta, a historic port city.",
+      image: "/images/terminal.png",
     },
   ];
+
   const clicked = (terminal) => {
     alert("You clicked on " + terminal.name);
   };
@@ -51,31 +58,79 @@ export default function TerminalsPage() {
   return (
     <Container>
       <Box sx={{ flexGrow: 1, py: 4 }}>
+        {/* GIF Image */}
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+          <Image
+            src="https://cdn.dribbble.com/users/3593902/screenshots/6886578/bus-animation-1.gif"
+            alt="Bus Animation"
+            width={600}
+            height={200}
+            // layout="fill"
+            objectFit="contain"
+            unoptimized
+          />
+        </Box>
+
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{
+            fontWeight: "bold",
+            textAlign: "center",
+            marginBottom: 4,
+            color: "#1976d2",
+          }}
+        >
+          Explore Terminals
+        </Typography>
+
         <Grid container spacing={3}>
           {terminals.map((terminal, index) => (
-            <Grid item xs={12} md={6} key={index}>
-              <Item>
+            <Grid item xs={12} sm={12} key={index}>
+              <Item onClick={() => clicked(terminal)}>
                 {/* Left side: Image taking 30% of the width */}
                 <Box sx={{ width: "30%", position: "relative" }}>
                   <Image
                     src={terminal.image}
                     alt={terminal.name}
-                    width={300} // Define width
-                    height={200} // Define height
+                    width={300}
+                    height={200}
                     layout="responsive"
-                    style={{ borderRadius: "4px" }}
+                    style={{ borderRadius: "10px" }} // More rounded image corners
                   />
                 </Box>
 
                 {/* Right side: Text content and button taking 70% */}
                 <Box sx={{ width: "70%", paddingLeft: 2 }}>
-                  <Typography variant="h5" component="h2" gutterBottom>
+                  <Typography
+                    variant="h5"
+                    component="h2"
+                    sx={{ fontWeight: "bold", color: "#004d40" }} // Stronger color
+                    gutterBottom
+                  >
                     {terminal.name}
                   </Typography>
-                  <Typography variant="body1" color="textSecondary" paragraph>
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    paragraph
+                    sx={{ marginBottom: 2, color: "#616161" }} // Lighter grey text
+                  >
                     {terminal.description}
                   </Typography>
-                  <Button variant="contained" color="primary">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      backgroundColor: "#0288d1",
+                      borderRadius: "50px", // Rounded button
+                      padding: "8px 16px",
+                      textTransform: "none", // No uppercase text
+                      "&:hover": {
+                        backgroundColor: "#0277bd", // Darker blue on hover
+                      },
+                    }}
+                  >
                     View More
                   </Button>
                 </Box>

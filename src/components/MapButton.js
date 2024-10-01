@@ -1,16 +1,42 @@
 import React from "react";
-import { Button } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { Box, Typography } from "@mui/material";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
-export default function MapButton() {
+const containerStyle = {
+  width: "100%",
+  height: "250px",
+  overflow: "hidden",
+  borderRadius: "20px",
+};
+
+const center = {
+  lat: 40.7128, // Example: New York City coordinates
+  lng: -74.006,
+};
+
+const zoom = 14;
+
+export default function InteractiveMap() {
   return (
-    <Button
-      variant="contained"
-      color="secondary"
-      startIcon={<LocationOnIcon />}
-      onClick={() => window.open("https://maps.google.com", "_blank")}
+    <Box
+      sx={{
+        maxWidth: 1000,
+        mx: "auto",
+        mt: 4,
+        // borderRadius: 20,
+        // backgroundColor: "blue",
+        overflow: "hidden",
+      }}
     >
-      View on Google Maps
-    </Button>
+      <LoadScript googleMapsApiKey="AIzaSyAaw5_LN_pYGoUq2WNSp0CMcWvCVNHprS0">
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={center}
+          zoom={zoom}
+        >
+          <Marker position={center} />
+        </GoogleMap>
+      </LoadScript>
+    </Box>
   );
 }
