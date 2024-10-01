@@ -104,7 +104,9 @@ const BusTimesTimeline = ({ times }) => (
           {/* Dot for each time */}
           <CircleIcon sx={{ fontSize: 10, mr: 2, color: "#2196f3" }} />
           {/* Time display */}
-          <Typography variant="body2">{time}</Typography>
+          <Typography variant="body2" sx={{ fontFamily: "Poppins" }}>
+            {time}
+          </Typography>
         </Box>
       ))}
     </Box>
