@@ -13,6 +13,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export default function BusList({ busCompanies, handleViewSchedules }) {
+  console.log("Inside the bus list", busCompanies);
   return (
     <Grid container spacing={2} sx={{ marginBottom: 3 }}>
       {busCompanies.map((company, index) => (
@@ -36,7 +37,6 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                 sx={{ display: "flex", alignItems: "center" }}
               >
                 {company.name}
-                <ArrowForwardIcon sx={{ marginLeft: "auto" }} />
               </Typography>
 
               {/* Destinations with Icon */}
@@ -46,7 +46,8 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                   Destinations:{" "}
                 </Typography>
                 <Typography variant="body2" sx={{ marginLeft: 0.5 }}>
-                  {company.destinations.join(", ")}
+                  {/* Display the 'from' and 'to' from the schedule's main route */}
+                  {`${company.schedules.from} - ${company.schedules.to}`}
                 </Typography>
               </Box>
 

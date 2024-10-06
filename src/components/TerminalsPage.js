@@ -5,7 +5,9 @@ import { styled } from "@mui/material/styles";
 import { Box, Paper, Grid, Container, Typography, Button } from "@mui/material";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
+import { db } from "../firebase.js";
+import { collection, getDocs } from "firebase/firestore";
+import Link from "next/link";
 // Styled Paper Component for terminal cards
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#f5f5f5",
@@ -24,52 +26,75 @@ const Item = styled(Paper)(({ theme }) => ({
 
 // Main Page for showing all terminals
 export default function TerminalsPage() {
-  const terminals = [
-    {
-      name: "Guzelyurt Terminal",
-      description:
-        "A hub for major bus routes connecting the capital to other cities.",
-      image: "/images/terminal.png",
-    },
-    {
-      name: "Lefke Terminal",
-      description:
-        "Key terminal serving routes to and from Famagusta, a historic port city.",
-      image: "/images/terminal.png",
-    },
-    {
-      name: "Girne Terminal",
-      description:
-        "A hub for major bus routes connecting the capital to other cities.",
-      image: "/images/terminal.png",
-    },
-    {
-      name: "Nicosia Terminal",
-      description:
-        "Key terminal serving routes to and from Famagusta, a historic port city.",
-      image: "/images/terminal.png",
-    },
-  ];
+  const [terminals, setTerminals] = useState([]);
+  const image = "/images/terminal.png";
+
+  useEffect(() => {
+    async function fetchAllDocuments(collectionName) {
+      try {
+        const collectionRef = collection(db, collectionName);
+        const querySnapshot = await getDocs(collectionRef);
+
+        const documents = [];
+        querySnapshot.forEach((doc) => {
+          documents.push({ id: doc.id, ...doc.data() });
+        });
+
+        setTerminals(documents);
+      } catch (error) {
+        console.error("Error fetching documents: ", error);
+      }
+    }
+
+    fetchAllDocuments("locations");
+  }, []);
+  // const terminals = await fetchAllDocuments("locations");
+  // const terminals = [
+  //   {
+  //     name: "Guzelyurt Terminal",
+  //     description:
+  //       "A hub for major bus routes connecting the capital to other cities.",
+  //     image: "/images/terminal.png",
+  //   },
+  //   {
+  //     name: "Lefke Terminal",
+  //     description:
+  //       "Key terminal serving routes to and from Famagusta, a historic port city.",
+  //     image: "/images/terminal.png",
+  //   },
+  //   {
+  //     name: "Girne Terminal",
+  //     description:
+  //       "A hub for major bus routes connecting the capital to other cities.",
+  //     image: "/images/terminal.png",
+  //   },
+  //   {
+  //     name: "Nicosia Terminal",
+  //     description:
+  //       "Key terminal serving routes to and from Famagusta, a historic port city.",
+  //     image: "/images/terminal.png",
+  //   },
+  // ];
 
   const clicked = (terminal) => {
-    alert("You clicked on " + terminal.name);
+    // alert("You clicked on " + terminal.name);
   };
 
   return (
     <Container>
       <Box sx={{ flexGrow: 1, py: 4 }}>
         {/* GIF Image */}
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+        {/* <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
           <Image
             src="https://cdn.dribbble.com/users/3593902/screenshots/6886578/bus-animation-1.gif"
             alt="Bus Animation"
             width={600}
             height={200}
             // layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }} //
             unoptimized
           />
-        </Box>
+        </Box> */}
 
         <Typography
           variant="h6"
@@ -91,7 +116,7 @@ export default function TerminalsPage() {
                 {/* Left side: Image taking 30% of the width */}
                 <Box sx={{ width: "30%", position: "relative" }}>
                   <Image
-                    src={terminal.image}
+                    src={image}
                     alt={terminal.name}
                     width={300}
                     height={200}
@@ -130,6 +155,8 @@ export default function TerminalsPage() {
                         backgroundColor: "#0277bd", // Darker blue on hover
                       },
                     }}
+                    component={Link}
+                    href={`/oneterminal/${terminal.id}`}
                   >
                     View More
                   </Button>

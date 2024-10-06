@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { db } from "../firebase"; // assuming you have Firebase setup
 import {
   Box,
   Grid,
@@ -14,64 +15,108 @@ import {
   Chip,
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import WeatherForecast from "./WeatherForecast";
-import MapButton from "./MapButton";
 import CurrencyLiraIcon from "@mui/icons-material/CurrencyLira";
 import TerminalHeading from "./TerminalHeading";
 import BusCompaniesHeading from "./BusCompaniesHeading";
 import BusList from "./BusList";
 import WeatherHeading from "./WeatherHeading";
-// Dummy bus data with prices and schedules
-const busCompanies = [
-  {
-    name: "Akva",
-    destinations: ["Lefke", "Nicosia", "Girne"],
-    phone: "+90 123 456 789",
-    schedules: {
-      Lefke: { times: ["9:00 AM", "12:00 PM", "3:00 PM"], price: "50 TL" },
-      Nicosia: { times: ["10:00 AM", "1:00 PM", "4:00 PM"], price: "120 TL" },
-      Girne: { times: ["11:00 AM", "2:00 PM", "5:00 PM"], price: "100 TL" },
-    },
-  },
-  {
-    name: "Cimen",
-    destinations: ["Lefke", "Nicosia", "Girne"],
-    phone: "+90 987 654 321",
-    schedules: {
-      Lefke: { times: ["8:00 AM", "11:00 AM", "2:00 PM"], price: "45 TL" },
-      Nicosia: { times: ["9:00 AM", "12:00 PM", "3:00 PM"], price: "55 TL" },
-      Girne: {
-        times: [
-          "10:00 AM",
-          "1:00 PM",
-          "4:00 PM",
-          "10:00 AM",
-          "1:00 PM",
-          "4:00 PM",
-          "10:00 AM",
-          "1:00 PM",
-          "4:00 PM",
-          "10:00 AM",
-          "1:00 PM",
-          "4:00 PM",
-        ],
-        price: "65 TL",
-      },
-    },
-  },
-];
+import WeatherForecast from "./WeatherForecast";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore"; // updated import
 
-export default function OneTerminal() {
+export default function OneTerminal({ id }) {
+  const [busCompanies, setBusCompanies] = useState([]);
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [selectedCity, setSelectedCity] = useState("");
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
+  // Fetching data from Firebase
+  useEffect(() => {
+    console.log("Id:", id);
+    if (id) {
+      const fetchLocationData = async () => {
+        // Fetch the terminal's location data by ID from the Locations Collection
+        const locationRef = doc(db, "locations", id);
+        const locationDoc = await getDoc(locationRef);
+
+        if (locationDoc.exists()) {
+          const locationData = locationDoc.data();
+          console.log("Location Data:", locationData);
+
+          // Create an array to hold all the bus service data
+          const busServicesData = [];
+
+          // Use for...of to handle async operations within map
+          for (const serviceName of locationData.services) {
+            console.log("Fetching bus service for:", serviceName);
+            const busServiceQuery = query(
+              collection(db, "bus_services"),
+              where("name", "==", serviceName),
+              where("terminal", "==", locationData.name),
+            );
+
+            const busServiceDocs = await getDocs(busServiceQuery);
+
+            for (const busServiceDoc of busServiceDocs.docs) {
+              const busServiceData = busServiceDoc.data();
+              console.log("Bus Service Data:", busServiceData.name);
+
+              // Fetch schedule data from the Schedules Collection
+              const scheduleQuery = query(
+                collection(db, "schedules"),
+                where("bus_service", "==", busServiceData.name),
+              );
+
+              const scheduleDocs = await getDocs(scheduleQuery);
+
+              for (const scheduleDoc of scheduleDocs.docs) {
+                const scheduleData = scheduleDoc.data();
+                console.log("Schedule data", scheduleData);
+
+                // Fetch route info from Routes Collection
+                const routeRef = doc(db, "routes", scheduleData.route);
+                const routeDoc = await getDoc(routeRef);
+                const routeData = routeDoc.exists ? routeDoc.data() : {};
+                console.log("Route data", routeData);
+
+                busServicesData.push({
+                  name: busServiceData.name,
+                  phone: busServiceData.phone_number,
+                  schedules: {
+                    from: routeData.from,
+                    to: routeData.to,
+                    price: scheduleData.main_route.price,
+                    times: {
+                      weekdays: scheduleData.main_route.weekdays,
+                      weekend: scheduleData.main_route.weekend,
+                    },
+                  },
+                });
+              }
+            }
+          }
+
+          // Set bus services after all data has been fetched
+          console.log("All bus services:", busServicesData);
+          setBusCompanies(busServicesData);
+        }
+      };
+
+      fetchLocationData();
+    }
+  }, [id]);
+
   const handleViewSchedules = (company) => {
     setSelectedBus(company);
     setIsOverlayOpen(true);
-    setSelectedCity(company.destinations[0]); // default city selection
+    setSelectedCity(company.schedules.from); // default city selection to 'from'
   };
 
   const handleDayChange = (event) => {
@@ -88,38 +133,11 @@ export default function OneTerminal() {
 
   return (
     <Box sx={{ maxWidth: 1000, padding: 3, mx: "auto" }}>
-      {/* Map Section */}
+      {/* Terminal Name Heading */}
       <TerminalHeading />
-      <Box sx={{ marginBottom: 3, borderRadius: 30 }}>
-        <MapButton />
-      </Box>
 
       {/* Bus Companies List */}
       <BusCompaniesHeading />
-      {/* <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-        {busCompanies.map((company, index) => (
-          <Grid item xs={12} md={6} key={index}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{company.name}</Typography>
-                <Typography variant="body2">
-                  Destinations: {company.destinations.join(", ")}
-                </Typography>
-                <Typography variant="body2">Phone: {company.phone}</Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleViewSchedules(company)}
-                  sx={{ marginTop: 2 }}
-                >
-                  View Bus Schedules
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid> */}
-
       <BusList
         busCompanies={busCompanies}
         handleViewSchedules={handleViewSchedules}
@@ -173,57 +191,42 @@ export default function OneTerminal() {
               </Select>
             </Box>
 
-            {/* City Selection */}
-            <Box mb={2}>
-              <Typography>Select City:</Typography>
-              <Select
-                value={selectedCity}
-                onChange={handleCityChange}
-                fullWidth
-              >
-                {selectedBus.destinations.map((city) => (
-                  <MenuItem key={city} value={city}>
-                    {city}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
-
             {/* Bus Schedule and Price Display */}
             {selectedCity && (
               <Box>
-                <Typography variant="h6">
+                {/* <Typography variant="h6">
                   Schedule for {selectedCity}
-                </Typography>
-                {/* Display Times in Grid */}
+                </Typography> */}
+                {/* Display Times */}
                 <Grid container spacing={1} sx={{ marginBottom: 2 }}>
-                  {selectedBus.schedules[selectedCity].times.map(
-                    (time, index) => (
-                      <Grid item xs={6} sm={4} key={index}>
-                        <Chip
-                          icon={<AccessTimeIcon />}
-                          label={time}
-                          clickable
-                          color="primary"
-                          sx={{
-                            // padding: 1,
-                            width: "100%",
-                            justifyContent: "center",
-                            backgroundColor: "#1976d2",
-                            color: "#fff",
-                          }}
-                        />
-                      </Grid>
-                    ),
-                  )}
+                  {(selectedDay === "Saturday" || selectedDay === "Sunday"
+                    ? selectedBus.schedules.times.weekend
+                    : selectedBus.schedules.times.weekdays
+                  ).map((time, index) => (
+                    <Grid item xs={6} sm={4} key={index}>
+                      <Chip
+                        icon={<AccessTimeIcon />}
+                        label={time}
+                        clickable
+                        color="primary"
+                        sx={{
+                          width: "100%",
+                          justifyContent: "center",
+                          backgroundColor: "#1976d2",
+                          color: "#fff",
+                        }}
+                      />
+                    </Grid>
+                  ))}
                 </Grid>
+
                 {/* Display Price with Icon */}
                 <Typography
                   variant="body1"
                   sx={{ color: "red", display: "flex", alignItems: "center" }}
                 >
                   <CurrencyLiraIcon sx={{ marginRight: 1 }} />
-                  Price: {selectedBus.schedules[selectedCity].price}
+                  Price: {selectedBus.schedules.price}
                 </Typography>
               </Box>
             )}

@@ -4,9 +4,16 @@ import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 
 export default function BusCompaniesHeading() {
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", marginBottom: 3 }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        marginBottom: 3,
+        height: 50,
+      }}
+    >
       <Paper
-        elevation={3}
+        elevation={4}
         sx={{
           display: "flex",
           alignItems: "center",
@@ -29,7 +36,7 @@ export default function BusCompaniesHeading() {
           sx={{
             fontWeight: "bold",
             fontSize: "1.5rem",
-            padding: "0 15px",
+            padding: "0 30px",
           }}
         >
           Bus Companies

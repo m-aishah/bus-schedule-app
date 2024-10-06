@@ -28,7 +28,7 @@ export default function InteractiveMap() {
         overflow: "hidden",
       }}
     >
-      <LoadScript googleMapsApiKey="">
+      <LoadScript googleMapsApiKey="AIzaSyAaw5_LN_pYGoUq2WNSp0CMcWvCVNHprS0">
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}

@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
-export default function TerminalHeading(terminalName) {
+export default function TerminalHeading() {
   return (
     <Box
       sx={{
@@ -14,7 +14,7 @@ export default function TerminalHeading(terminalName) {
       }}
     >
       <Paper
-        elevation={3}
+        elevation={5}
         sx={{
           display: "flex",
           alignItems: "center",
@@ -24,8 +24,8 @@ export default function TerminalHeading(terminalName) {
           color: "#fff",
         }}
       >
-        <LocationOnIcon sx={{ fontSize: 30, marginRight: 1 }} />
-        <Typography variant="h5" textAlign="center" sx={{ fontWeight: "bold" }}>
+        <LocationOnIcon sx={{ fontSize: 25, marginRight: 1 }} />
+        <Typography variant="h6" textAlign="center" sx={{ fontWeight: "bold" }}>
           Guzelyurt Terminal Location
         </Typography>
       </Paper>

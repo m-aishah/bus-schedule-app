@@ -17,6 +17,7 @@ export default function WeatherHeading() {
         width: "fit-content", // fit the content width
         mx: "auto", // center the box horizontally
         width: "100%",
+        height: 50,
       }}
     >
       {/* Left Weather Icon */}
