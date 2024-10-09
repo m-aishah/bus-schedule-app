@@ -28,7 +28,7 @@ import {
   getDocs,
   query,
   where,
-} from "firebase/firestore"; // updated import
+} from "firebase/firestore";
 
 export default function OneTerminal({ id }) {
   const [busCompanies, setBusCompanies] = useState([]);
@@ -36,6 +36,7 @@ export default function OneTerminal({ id }) {
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [selectedCity, setSelectedCity] = useState("");
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  const [terminalHeadingName, setTerminalHeadingName] = useState("");
 
   // Fetching data from Firebase
   useEffect(() => {
@@ -48,44 +49,49 @@ export default function OneTerminal({ id }) {
 
         if (locationDoc.exists()) {
           const locationData = locationDoc.data();
-          console.log("Location Data:", locationData);
+          console.log("Location Data:", locationData); // Log the location data
 
-          // Create an array to hold all the bus service data
+          // Ensure terminal name is correct
+          const terminalName = locationData.name.trim();
+          console.log("Terminal Name:", terminalName);
+          setTerminalHeadingName(terminalName);
+          console.log("Terminal codes:", locationData.coordinates);
+
+          const busServiceQuery = query(
+            collection(db, "bus_services"),
+            where("terminal", "==", terminalName),
+          );
+
+          const busServiceDocs = await getDocs(busServiceQuery);
+          console.log("Bus Service Docs:", busServiceDocs); // Log bus service results
+
           const busServicesData = [];
 
-          // Use for...of to handle async operations within map
-          for (const serviceName of locationData.services) {
-            console.log("Fetching bus service for:", serviceName);
-            const busServiceQuery = query(
-              collection(db, "bus_services"),
-              where("name", "==", serviceName),
-              where("terminal", "==", locationData.name),
+          for (const busServiceDoc of busServiceDocs.docs) {
+            const busServiceData = busServiceDoc.data();
+            // console.log("Bus Service Data:", busServiceData);
+
+            // Fetch schedule data from the Schedules Collection
+            const scheduleQuery = query(
+              collection(db, "schedules"),
+              where("bus_service", "==", busServiceData.name),
             );
 
-            const busServiceDocs = await getDocs(busServiceQuery);
+            const scheduleDocs = await getDocs(scheduleQuery);
+            // console.log("Schedule Docs:", scheduleDocs);
 
-            for (const busServiceDoc of busServiceDocs.docs) {
-              const busServiceData = busServiceDoc.data();
-              console.log("Bus Service Data:", busServiceData.name);
+            for (const scheduleDoc of scheduleDocs.docs) {
+              const scheduleData = scheduleDoc.data();
+              // console.log("Schedule Data:", scheduleData);
 
-              // Fetch schedule data from the Schedules Collection
-              const scheduleQuery = query(
-                collection(db, "schedules"),
-                where("bus_service", "==", busServiceData.name),
-              );
+              // Fetch route info from Routes Collection
+              const routeRef = doc(db, "routes", scheduleData.route);
+              const routeDoc = await getDoc(routeRef);
+              const routeData = routeDoc.exists ? routeDoc.data() : {};
+              console.log("Route Data:", routeData); // Log route data
 
-              const scheduleDocs = await getDocs(scheduleQuery);
-
-              for (const scheduleDoc of scheduleDocs.docs) {
-                const scheduleData = scheduleDoc.data();
-                console.log("Schedule data", scheduleData);
-
-                // Fetch route info from Routes Collection
-                const routeRef = doc(db, "routes", scheduleData.route);
-                const routeDoc = await getDoc(routeRef);
-                const routeData = routeDoc.exists ? routeDoc.data() : {};
-                console.log("Route data", routeData);
-
+              // Check if the route is in the bus service's routes list
+              if (busServiceData.routes.includes(scheduleData.route)) {
                 busServicesData.push({
                   name: busServiceData.name,
                   phone: busServiceData.phone_number,
@@ -103,8 +109,7 @@ export default function OneTerminal({ id }) {
             }
           }
 
-          // Set bus services after all data has been fetched
-          console.log("All bus services:", busServicesData);
+          console.log("Filtered Bus Services:", busServicesData);
           setBusCompanies(busServicesData);
         }
       };
@@ -112,7 +117,6 @@ export default function OneTerminal({ id }) {
       fetchLocationData();
     }
   }, [id]);
-
   const handleViewSchedules = (company) => {
     setSelectedBus(company);
     setIsOverlayOpen(true);
@@ -134,7 +138,7 @@ export default function OneTerminal({ id }) {
   return (
     <Box sx={{ maxWidth: 1000, padding: 3, mx: "auto" }}>
       {/* Terminal Name Heading */}
-      <TerminalHeading />
+      <TerminalHeading terminalId={id} />
 
       {/* Bus Companies List */}
       <BusCompaniesHeading />
@@ -146,7 +150,7 @@ export default function OneTerminal({ id }) {
       {/* Weather Forecast */}
       <WeatherHeading />
       <Box sx={{ marginBottom: 3 }}>
-        <WeatherForecast />
+        <WeatherForecast terminalId={id} />
       </Box>
 
       {/* Bus Schedule Overlay */}

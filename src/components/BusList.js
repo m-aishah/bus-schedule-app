@@ -11,6 +11,7 @@ import {
 import PlaceIcon from "@mui/icons-material/Place";
 import PhoneIcon from "@mui/icons-material/Phone";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import BusAlertIcon from "@mui/icons-material/BusAlert";
 
 export default function BusList({ busCompanies, handleViewSchedules }) {
   console.log("Inside the bus list", busCompanies);
@@ -33,9 +34,17 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
             <CardContent>
               {/* Company Name */}
               <Typography
-                variant="h6"
-                sx={{ display: "flex", alignItems: "center" }}
+                variant="h5" // Changed to h5 for a more prominent look
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontWeight: "bold", // Bolder font weight
+                  color: "#1976d2", // Company name color
+                  textShadow: "0.5px 0.5px 2px rgba(0,0,0,0.2)", // Subtle text shadow
+                }}
               >
+                <BusAlertIcon sx={{ marginRight: 1 }} />{" "}
+                {/* Icon for the company */}
                 {company.name}
               </Typography>
 

@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, Grid, Paper } from "@mui/material";
 import { WbSunny, Cloud, Grain, Air } from "@mui/icons-material";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase"; // Make sure the correct db is imported
+import axios from "axios";
 
 const WeatherIcon = ({ type }) => {
   switch (type) {
-    case "sunny":
+    case "clear":
       return <WbSunny fontSize="large" sx={{ color: "orange" }} />;
-    case "cloudy":
+    case "clouds":
       return <Cloud fontSize="large" sx={{ color: "grey.500" }} />;
-    case "rainy":
+    case "rain":
       return <Grain fontSize="large" sx={{ color: "blue" }} />;
-    case "windy":
+    case "wind":
       return <Air fontSize="large" sx={{ color: "grey.700" }} />;
     default:
       return null;
@@ -42,13 +45,85 @@ const HourlyForecast = ({ hour, type, temperature }) => (
   </Paper>
 );
 
-export default function WeatherForecast() {
-  const hourlyData = [
-    { hour: "12 PM", type: "sunny", temperature: 25 },
-    { hour: "1 PM", type: "cloudy", temperature: 24 },
-    { hour: "2 PM", type: "rainy", temperature: 22 },
-    { hour: "3 PM", type: "windy", temperature: 23 },
-  ];
+export default function WeatherForecast({ terminalId }) {
+  const [hourlyData, setHourlyData] = useState([]);
+  const [coordinates, setCoordinates] = useState(null);
+
+  useEffect(() => {
+    console.log("Inside the weather", terminalId);
+    const fetchTerminalCoordinates = async () => {
+      if (!terminalId) {
+        console.error("Invalid terminal ID.");
+        return;
+      }
+
+      try {
+        const terminalRef = doc(db, "locations", terminalId);
+        const terminalSnap = await getDoc(terminalRef);
+        if (terminalSnap.exists()) {
+          const { lat, lng } = terminalSnap.data().coordinates;
+          setCoordinates({ lat, lng });
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching terminal data:", error);
+      }
+    };
+
+    fetchTerminalCoordinates();
+  }, [terminalId]);
+
+  useEffect(() => {
+    const fetchWeatherData = async () => {
+      if (!coordinates) return;
+
+      try {
+        const { lat, lng } = coordinates;
+        const response = await axios.get(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m,weathercode&timezone=auto`,
+        );
+        const { hourly, timezone } = response.data;
+
+        const currentTime = new Date();
+        const currentHour = currentTime.getHours();
+
+        const forecast = hourly.time
+          .slice(currentHour, currentHour + 4)
+          .map((time, index) => {
+            const weatherCode = hourly.weathercode[currentHour + index];
+            let weatherType = "clear";
+            if (weatherCode >= 2 && weatherCode <= 3) weatherType = "clouds";
+            else if (weatherCode >= 61 && weatherCode <= 67)
+              weatherType = "rain";
+            else if (weatherCode >= 51 && weatherCode <= 57)
+              weatherType = "wind";
+
+            const forecastTime = new Date(time);
+            const hour = forecastTime.getHours();
+            const displayHour =
+              hour === 0
+                ? "12 AM"
+                : hour > 12
+                  ? `${hour - 12} PM`
+                  : `${hour} AM`;
+
+            return {
+              hour: displayHour,
+              type: weatherType,
+              temperature: Math.round(
+                hourly.temperature_2m[currentHour + index],
+              ),
+            };
+          });
+        setHourlyData(forecast);
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+      }
+    };
+
+    fetchWeatherData();
+  }, [coordinates]);
 
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 4 }}>

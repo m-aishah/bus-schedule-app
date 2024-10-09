@@ -48,33 +48,6 @@ export default function TerminalsPage() {
 
     fetchAllDocuments("locations");
   }, []);
-  // const terminals = await fetchAllDocuments("locations");
-  // const terminals = [
-  //   {
-  //     name: "Guzelyurt Terminal",
-  //     description:
-  //       "A hub for major bus routes connecting the capital to other cities.",
-  //     image: "/images/terminal.png",
-  //   },
-  //   {
-  //     name: "Lefke Terminal",
-  //     description:
-  //       "Key terminal serving routes to and from Famagusta, a historic port city.",
-  //     image: "/images/terminal.png",
-  //   },
-  //   {
-  //     name: "Girne Terminal",
-  //     description:
-  //       "A hub for major bus routes connecting the capital to other cities.",
-  //     image: "/images/terminal.png",
-  //   },
-  //   {
-  //     name: "Nicosia Terminal",
-  //     description:
-  //       "Key terminal serving routes to and from Famagusta, a historic port city.",
-  //     image: "/images/terminal.png",
-  //   },
-  // ];
 
   const clicked = (terminal) => {
     // alert("You clicked on " + terminal.name);
@@ -83,19 +56,6 @@ export default function TerminalsPage() {
   return (
     <Container>
       <Box sx={{ flexGrow: 1, py: 4 }}>
-        {/* GIF Image */}
-        {/* <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
-          <Image
-            src="https://cdn.dribbble.com/users/3593902/screenshots/6886578/bus-animation-1.gif"
-            alt="Bus Animation"
-            width={600}
-            height={200}
-            // layout="fill"
-            style={{ objectFit: "contain" }} //
-            unoptimized
-          />
-        </Box> */}
-
         <Typography
           variant="h6"
           gutterBottom
