@@ -21,6 +21,7 @@ import BusCompaniesHeading from "./BusCompaniesHeading";
 import BusList from "./BusList";
 import WeatherHeading from "./WeatherHeading";
 import WeatherForecast from "./WeatherForecast";
+import Departure from "./OverlayDepature";
 import {
   collection,
   doc,
@@ -171,9 +172,7 @@ export default function OneTerminal({ id }) {
           }}
         >
           <Paper sx={{ padding: 2, width: "100%", maxWidth: 400 }}>
-            <Typography variant="h5" gutterBottom>
-              {selectedBus.name} - Departure Schedule
-            </Typography>
+            <Departure destination={selectedBus.schedules.to} />
 
             {/* Day Selection */}
             <Box mb={2}>
@@ -197,41 +196,132 @@ export default function OneTerminal({ id }) {
 
             {/* Bus Schedule and Price Display */}
             {selectedCity && (
-              <Box>
-                {/* <Typography variant="h6">
-                  Schedule for {selectedCity}
-                </Typography> */}
-                {/* Display Times */}
-                <Grid container spacing={1} sx={{ marginBottom: 2 }}>
-                  {(selectedDay === "Saturday" || selectedDay === "Sunday"
-                    ? selectedBus.schedules.times.weekend
-                    : selectedBus.schedules.times.weekdays
-                  ).map((time, index) => (
-                    <Grid item xs={6} sm={4} key={index}>
-                      <Chip
-                        icon={<AccessTimeIcon />}
-                        label={time}
-                        clickable
-                        color="primary"
-                        sx={{
-                          width: "100%",
-                          justifyContent: "center",
-                          backgroundColor: "#1976d2",
-                          color: "#fff",
-                        }}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-
-                {/* Display Price with Icon */}
-                <Typography
-                  variant="body1"
-                  sx={{ color: "red", display: "flex", alignItems: "center" }}
+              <Box
+                sx={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.2)", // Dimmed background
+                  backdropFilter: "blur(2px)", // Blurred background for modern look
+                  zIndex: 10,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 2,
+                  transition: "all 0.3s ease-in-out", // Smooth fade-in animation
+                  opacity: isOverlayOpen ? 1 : 0, // Fades the overlay in
+                  visibility: isOverlayOpen ? "visible" : "hidden", // Hides overlay when closed
+                }}
+              >
+                <Paper
+                  sx={{
+                    padding: 3,
+                    width: "100%",
+                    maxWidth: 450,
+                    backgroundColor: "#fff",
+                    borderRadius: 3,
+                    boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.3)", // Subtle shadow for depth
+                    transform: isOverlayOpen
+                      ? "translateY(0)"
+                      : "translateY(-20px)", // Slide effect
+                    transition: "transform 0.3s ease-in-out", // Smooth transition for slide
+                  }}
                 >
-                  <CurrencyLiraIcon sx={{ marginRight: 1 }} />
-                  Price: {selectedBus.schedules.price}
-                </Typography>
+                  <Departure destination={selectedBus.schedules.to} />
+
+                  {/* Day Selection */}
+                  <Box mb={3}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                      Select Day
+                    </Typography>
+                    <Select
+                      value={selectedDay}
+                      onChange={handleDayChange}
+                      fullWidth
+                      sx={{
+                        backgroundColor: "#f0f0f0", // Light background for inputs
+                        borderRadius: 2,
+                      }}
+                    >
+                      {[
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday",
+                        "Sunday",
+                      ].map((day) => (
+                        <MenuItem key={day} value={day}>
+                          {day}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+
+                  {/* Bus Schedule and Price Display */}
+                  {selectedCity && (
+                    <Box>
+                      {/* Display Times */}
+                      <Grid container spacing={1} sx={{ marginBottom: 3 }}>
+                        {(selectedDay === "Saturday" || selectedDay === "Sunday"
+                          ? selectedBus.schedules.times.weekend
+                          : selectedBus.schedules.times.weekdays
+                        ).map((time, index) => (
+                          <Grid item xs={6} sm={4} key={index}>
+                            <Chip
+                              icon={<AccessTimeIcon />}
+                              label={time}
+                              clickable
+                              color="primary"
+                              sx={{
+                                width: "100%",
+                                justifyContent: "center",
+                                backgroundColor: "#1976d2",
+                                color: "#fff",
+                                transition: "background-color 0.2s ease",
+                                "&:hover": {
+                                  backgroundColor: "#1565c0", // Darker on hover
+                                },
+                              }}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+
+                      {/* Display Price with Icon */}
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: "#ff5722",
+                        }}
+                      >
+                        <CurrencyLiraIcon sx={{ marginRight: 1 }} />
+                        Price: {selectedBus.schedules.price}
+                      </Typography>
+                    </Box>
+                  )}
+
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleCloseOverlay}
+                    fullWidth
+                    sx={{
+                      marginTop: 2,
+                      backgroundColor: "#ff5722",
+                      "&:hover": {
+                        backgroundColor: "#e64a19", // Darker hover effect
+                      },
+                    }}
+                  >
+                    Close
+                  </Button>
+                </Paper>
               </Box>
             )}
 

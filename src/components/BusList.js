@@ -14,73 +14,102 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import BusAlertIcon from "@mui/icons-material/BusAlert";
 
 export default function BusList({ busCompanies, handleViewSchedules }) {
-  console.log("Inside the bus list", busCompanies);
   return (
-    <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+    <Grid container spacing={4} sx={{ marginBottom: 4 }}>
       {busCompanies.map((company, index) => (
         <Grid item xs={12} md={6} key={index}>
-          {/* Entire card clickable */}
+          {/* Elevated card for modern feel */}
           <Card
             onClick={() => handleViewSchedules(company)}
             sx={{
               cursor: "pointer",
-              transition: "transform 0.3s, box-shadow 0.3s",
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
+              borderRadius: "12px",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
               "&:hover": {
-                transform: "scale(1.05)",
-                boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
+                transform: "scale(1.04)",
+                boxShadow: "0 16px 32px rgba(0, 0, 0, 0.2)",
               },
             }}
           >
-            <CardContent>
-              {/* Company Name */}
-              <Typography
-                variant="h5" // Changed to h5 for a more prominent look
+            <CardContent sx={{ padding: 4 }}>
+              {/* Company Info */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 2,
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: "700",
+                    color: "#1E88E5", // Updated to a modern blue shade
+                  }}
+                >
+                  {company.name}
+                </Typography>
+                <BusAlertIcon sx={{ fontSize: "2rem", color: "#1E88E5" }} />
+              </Box>
+
+              {/* Destination section - bold, clean, and highly visible */}
+              <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  fontWeight: "bold", // Bolder font weight
-                  color: "#1976d2", // Company name color
-                  textShadow: "0.5px 0.5px 2px rgba(0,0,0,0.2)", // Subtle text shadow
+                  backgroundColor: "#F0F4F8",
+                  padding: 2,
+                  borderRadius: "8px",
+                  marginBottom: 2,
                 }}
               >
-                <BusAlertIcon sx={{ marginRight: 1 }} />{" "}
-                {/* Icon for the company */}
-                {company.name}
-              </Typography>
-
-              {/* Destinations with Icon */}
-              <Box sx={{ display: "flex", alignItems: "center", marginY: 1 }}>
-                <PlaceIcon sx={{ marginRight: 1, color: "#1976d2" }} />
-                <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                  Destinations:{" "}
-                </Typography>
-                <Typography variant="body2" sx={{ marginLeft: 0.5 }}>
-                  {/* Display the 'from' and 'to' from the schedule's main route */}
-                  {`${company.schedules.from} - ${company.schedules.to}`}
+                <PlaceIcon sx={{ color: "#1E88E5", marginRight: 1 }} />
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#333", // Darker font color for contrast
+                  }}
+                >
+                  {company.schedules.from}
+                  <ArrowForwardIcon
+                    sx={{ marginX: 1, fontSize: "1.5rem", color: "#1E88E5" }}
+                  />
+                  {company.schedules.to}
                 </Typography>
               </Box>
 
-              {/* Phone with Icon */}
-              <Box sx={{ display: "flex", alignItems: "center", marginY: 1 }}>
-                <PhoneIcon sx={{ marginRight: 1, color: "#1976d2" }} />
-                <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                  Phone:{" "}
-                </Typography>
-                <Typography variant="body2" sx={{ marginLeft: 0.5 }}>
+              {/* Contact details */}
+              <Box
+                sx={{ display: "flex", alignItems: "center", marginBottom: 1 }}
+              >
+                <PhoneIcon sx={{ marginRight: 1, color: "#1E88E5" }} />
+                <Typography variant="body1" sx={{ color: "#333" }}>
                   {company.phone}
                 </Typography>
               </Box>
 
-              {/* View Schedules Button */}
+              {/* CTA Button */}
               <Button
                 variant="contained"
                 color="primary"
-                fullWidth
                 onClick={(e) => {
-                  e.stopPropagation(); // prevent card click
+                  e.stopPropagation();
                   handleViewSchedules(company);
                 }}
-                sx={{ marginTop: 2 }}
+                sx={{
+                  width: "100%",
+                  fontWeight: "600",
+                  backgroundColor: "#1E88E5",
+                  textTransform: "none", // Keeps the text in its original format
+                  "&:hover": {
+                    backgroundColor: "#1565C0",
+                  },
+                }}
               >
                 View Bus Schedules
               </Button>
