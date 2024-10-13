@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  Box,
-  Tabs,
-  Tab,
-  Typography,
-  IconButton,
-  useTheme,
-  Grid,
-  Paper,
-} from "@mui/material";
+import { Modal, Box, Tabs, Tab, IconButton, useTheme } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CircleIcon from "@mui/icons-material/Circle";
 import BusSchedule from "./BusSchedule"; // Make sure to import the BusSchedule component
@@ -36,11 +26,13 @@ const scheduleData = {
   ],
 };
 
-const BusModal = ({ open, onClose }) => {
+const BusModal = ({ open, onClose, scheduleData }) => {
   const theme = useTheme();
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (event, newValue) => {
+    console.log("Tab changed to:", newValue);
+    console.log(scheduleData);
     setActiveTab(newValue);
   };
 

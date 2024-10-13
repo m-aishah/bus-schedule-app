@@ -46,39 +46,19 @@ const Price = ({ amount }) => (
 );
 
 // Location and time selectors
-const LocationSelector = ({
-  from,
-  to,
-  onFromChange,
-  onToChange,
-  locations,
-}) => (
+const LocationBox = ({ from, to }) => (
   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-    <CustomSelect value={from} onChange={onFromChange} options={locations} />
+    <Typography>{from}</Typography>
     <Typography fontWeight={"bold"}>TO</Typography>
-    <CustomSelect value={to} onChange={onToChange} options={locations} />
+    <Typography> {to}</Typography>
   </Box>
 );
 
-const TimeSelector = ({
-  departureTime,
-  arrivalTime,
-  onDepartureChange,
-  onArrivalChange,
-  times,
-}) => (
+const TimeBox = ({ departureTime, arrivalTime }) => (
   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-    <CustomSelect
-      value={departureTime}
-      onChange={onDepartureChange}
-      options={times}
-    />
+    <Typography>{departureTime}</Typography>
     <Typography fontWeight={"bold"}>TO</Typography>
-    <CustomSelect
-      value={arrivalTime}
-      onChange={onArrivalChange}
-      options={times}
-    />
+    <Typography>{arrivalTime}</Typography>
   </Box>
 );
 
@@ -115,10 +95,9 @@ const BusTimesTimeline = ({ times }) => (
 
 // Main BusSchedule component
 const BusSchedule = ({ scheduleData }) => {
-  const { price, locations, times, fromLocations } = scheduleData;
+  const { price, locations, times } = scheduleData;
+  const fromLocations = ["Istanbul", "Ankara", "Izmir", "Antalya"];
 
-  const [from, setFrom] = React.useState(locations[0]);
-  const [to, setTo] = React.useState(locations[1]);
   const [departureTime, setDepartureTime] = React.useState(times[0]);
   const [arrivalTime, setArrivalTime] = React.useState(times[1]);
   const [fromLocation, setFromLocation] = React.useState(fromLocations[0]);
@@ -139,20 +118,11 @@ const BusSchedule = ({ scheduleData }) => {
           <Price amount={price} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <LocationSelector
-            from={from}
-            to={to}
-            onFromChange={(e) => setFrom(e.target.value)}
-            onToChange={(e) => setTo(e.target.value)}
-            locations={locations}
+          <LocationBox
+            from={scheduleData.source}
+            to={scheduleData.destination}
           />
-          <TimeSelector
-            departureTime={departureTime}
-            arrivalTime={arrivalTime}
-            onDepartureChange={(e) => setDepartureTime(e.target.value)}
-            onArrivalChange={(e) => setArrivalTime(e.target.value)}
-            times={times}
-          />
+          <TimeBox departureTime={departureTime} arrivalTime={arrivalTime} />
         </Grid>
       </Grid>
 
