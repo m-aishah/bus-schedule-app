@@ -56,7 +56,6 @@ export default function SchedulePage() {
   };
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [from, setFrom] = useState(locations[0]);
   const [to, setTo] = useState(locations[1]);
   const [departureTime, setDepartureTime] = useState(times[0]);

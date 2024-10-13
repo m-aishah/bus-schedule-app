@@ -12,7 +12,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 
 // Create a custom icon for markers
 const customIcon = new L.Icon({
-  iconUrl: require("../assets/location-icon.png"),
+  iconUrl: "location-icon.png",
   iconSize: [30, 30],
 });
 
