@@ -1,20 +1,18 @@
 "use client";
-import { useRouter } from "next/router";
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import { Box, Paper, Grid, Container, Typography, Button } from "@mui/material";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { db } from "../firebase.js";
-import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
+import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
+
 // Styled Paper Component for terminal cards
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#f5f5f5",
   padding: theme.spacing(2),
   display: "flex",
   alignItems: "center",
-  borderRadius: "20px", // Increase for a more rounded, modern look
+  borderRadius: "20px", // for a more rounded, modern look
   boxShadow: theme.shadows[3],
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
   "&:hover": {
@@ -24,33 +22,9 @@ const Item = styled(Paper)(({ theme }) => ({
   },
 }));
 
-// Main Page for showing all terminals
-export default function TerminalsPage() {
-  const [terminals, setTerminals] = useState([]);
-  const image = "/images/terminal.png";
-
-  useEffect(() => {
-    async function fetchAllDocuments(collectionName) {
-      try {
-        const collectionRef = collection(db, collectionName);
-        const querySnapshot = await getDocs(collectionRef);
-
-        const documents = [];
-        querySnapshot.forEach((doc) => {
-          documents.push({ id: doc.id, ...doc.data() });
-        });
-
-        setTerminals(documents);
-      } catch (error) {
-        console.error("Error fetching documents: ", error);
-      }
-    }
-
-    fetchAllDocuments("locations");
-  }, []);
-
+export default function TerminalsPage({ terminals }) {
   const clicked = (terminal) => {
-    // alert("You clicked on " + terminal.name);
+    // Handle click event
   };
 
   return (
@@ -73,15 +47,19 @@ export default function TerminalsPage() {
           {terminals.map((terminal, index) => (
             <Grid item xs={12} sm={12} key={index}>
               <Item onClick={() => clicked(terminal)}>
-                {/* Left side: Image taking 30% of the width */}
-                <Box sx={{ width: "30%", position: "relative" }}>
-                  <Image
-                    src={image}
-                    alt={terminal.name}
-                    width={300}
-                    height={200}
-                    layout="responsive"
-                    style={{ borderRadius: "10px" }} // More rounded image corners
+                {/* Left side: Icon taking 30% of the width */}
+                <Box
+                  sx={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <DirectionsBusIcon
+                    sx={{
+                      fontSize: 80,
+                      color: "#0288d1", // Stylish bus icon color
+                    }}
                   />
                 </Box>
 
