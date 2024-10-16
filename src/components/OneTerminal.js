@@ -10,7 +10,7 @@ import {
   Chip,
   Typography,
   Button,
-  CircularProgress, // Import CircularProgress for loading indicator
+  CircularProgress, // Loading indicator
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CurrencyLiraIcon from "@mui/icons-material/CurrencyLira";
@@ -20,6 +20,7 @@ import BusList from "./BusList";
 import WeatherHeading from "./WeatherHeading";
 import WeatherForecast from "./WeatherForecast";
 import Departure from "./OverlayDepature";
+import Price from "./Price";
 
 export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
   const [selectedBus, setSelectedBus] = useState(null);
@@ -28,25 +29,28 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [loading, setLoading] = useState(true); // Loading state
 
+  // Simulate loading time to show the loading indicator
   useEffect(() => {
-    // Simulate loading time (e.g., fetching data)
     const timer = setTimeout(() => {
-      setLoading(false); // Set loading to false after 3 seconds
-    }, 3500);
+      setLoading(false);
+    }, 3500); // 3.5 seconds delay
 
-    return () => clearTimeout(timer); // Cleanup timer on unmount
+    return () => clearTimeout(timer); // Clean up the timer on component unmount
   }, []);
 
+  // Handler to view bus schedules
   const handleViewSchedules = (company) => {
     setSelectedBus(company);
     setIsOverlayOpen(true);
     setSelectedCity(company.schedules.from); // default city selection to 'from'
   };
 
+  // Handler for day change
   const handleDayChange = (event) => {
     setSelectedDay(event.target.value);
   };
 
+  // Close overlay handler
   const handleCloseOverlay = () => {
     setIsOverlayOpen(false);
   };
@@ -56,10 +60,11 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
       {/* Terminal Name Heading */}
       <TerminalHeading terminalId={id} />
 
-      {/* Bus Companies List */}
+      {/* Bus Companies Heading */}
       <BusCompaniesHeading />
 
-      {loading ? ( // Check loading state
+      {/* Loading State */}
+      {loading ? (
         <Box sx={{ display: "flex", justifyContent: "center", margin: 3 }}>
           <CircularProgress /> {/* Loading spinner */}
         </Box>
@@ -85,21 +90,37 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
             left: 0,
             width: "100%",
             height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 10,
+            backgroundColor: "rgba(0, 0, 0, 0.6)", // Slightly darker overlay
+            zIndex: 1200, // Elevate above other content
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            backdropFilter: "blur(5px)", // Adds a blur effect for elegance
             padding: 2,
+            transition: "all 0.3s ease-in-out", // Smooth transition for the overlay
           }}
         >
-          <Paper sx={{ padding: 2, width: "100%", maxWidth: 400 }}>
+          <Paper
+            elevation={6}
+            sx={{
+              padding: 4,
+              maxWidth: 500,
+              borderRadius: "16px", // Soft rounded edges
+              animation: "fadeIn 0.5s ease-in-out", // Smooth appearance animation
+            }}
+          >
+            {/* Departure Heading */}
             <Departure destination={selectedBus.schedules.to} />
 
             {/* Day Selection */}
-            <Box mb={2}>
+            <Box mb={3}>
               <Typography>Select Day:</Typography>
-              <Select value={selectedDay} onChange={handleDayChange} fullWidth>
+              <Select
+                value={selectedDay}
+                onChange={handleDayChange}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+              >
                 {[
                   "Monday",
                   "Tuesday",
@@ -116,29 +137,29 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
               </Select>
             </Box>
 
-            {/* Bus Schedule and Price Display */}
+            {/* Schedule and Price */}
             {selectedCity && (
               <Box>
                 {/* Display Times */}
-                <Grid container spacing={1} sx={{ marginBottom: 3 }}>
+                <Grid container spacing={2} sx={{ marginBottom: 3 }}>
                   {(selectedDay === "Saturday" || selectedDay === "Sunday"
                     ? selectedBus.schedules.times.weekend
                     : selectedBus.schedules.times.weekdays
                   ).map((time, index) => (
-                    <Grid item xs={6} sm={4} key={index}>
+                    <Grid item xs={6} key={index}>
                       <Chip
-                        icon={<AccessTimeIcon />}
+                        // icon={<AccessTimeIcon />}
                         label={time}
                         clickable
-                        color="primary"
                         sx={{
                           width: "100%",
                           justifyContent: "center",
-                          backgroundColor: "#1976d2",
+                          backgroundColor: "#1976d2", // Modern blue
                           color: "#fff",
-                          transition: "background-color 0.2s ease",
+                          fontWeight: "bold",
+                          fontSize: "1.2rem",
                           "&:hover": {
-                            backgroundColor: "#1565c0", // Darker on hover
+                            backgroundColor: "#1565c0", // Darker blue hover effect
                           },
                         }}
                       />
@@ -146,31 +167,22 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
                   ))}
                 </Grid>
 
-                {/* Display Price with Icon */}
-                <Typography
-                  variant="body1"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    color: "#ff5722",
-                  }}
-                >
-                  <CurrencyLiraIcon sx={{ marginRight: 1 }} />
-                  Price: {selectedBus.schedules.price}
-                </Typography>
+                {/* Display Price */}
+                <Price price={selectedBus.schedules.price} />
               </Box>
             )}
 
+            {/* Close Button */}
             <Button
               variant="contained"
-              color="secondary"
+              color="error"
               onClick={handleCloseOverlay}
               fullWidth
               sx={{
-                marginTop: 2,
-                backgroundColor: "#ff5722",
+                marginTop: 3,
+                backgroundColor: "#ff5252",
                 "&:hover": {
-                  backgroundColor: "#e64a19", // Darker hover effect
+                  backgroundColor: "#e64a19",
                 },
               }}
             >
