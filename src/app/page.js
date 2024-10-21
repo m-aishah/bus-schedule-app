@@ -104,6 +104,7 @@ export default function SchedulePage() {
       selectedTime: time,
       source,
       destination,
+      busStops: scheduleData.busStops || [],
     });
     setModalOpen(true);
   };

@@ -16,7 +16,7 @@ const customIcon = new L.Icon({
   iconSize: [30, 30],
 });
 
-const MapContainer = () => {
+const MapContainer = (busStops) => {
   return (
     <Box
       sx={{

@@ -5,27 +5,6 @@ import CircleIcon from "@mui/icons-material/Circle";
 import BusSchedule from "./BusSchedule"; // Make sure to import the BusSchedule component
 import BusStops from "./BusStops"; // Import the BusStops component
 
-const scheduleData = {
-  price: 45,
-  locations: ["LEFKE", "GIRNE", "NICOSIA"],
-  times: [
-    "9:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-  ],
-  fromLocations: [
-    "EUROPEAN UNIVERSITY OF LEFKE",
-    "GIRNE AMERICAN UNIVERSITY",
-    "NEAR EAST UNIVERSITY",
-  ],
-};
-
 const BusModal = ({ open, onClose, scheduleData }) => {
   const theme = useTheme();
   const [activeTab, setActiveTab] = useState(0);
