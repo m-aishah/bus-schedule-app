@@ -9,25 +9,56 @@ import {
   Stack,
   InputLabel,
   CircularProgress,
+  Container,
+  Paper,
+  IconButton,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
+import { SwapVert, Schedule, LocationOn } from "@mui/icons-material";
 import BusCard from "@/components/BusCard";
 import BusModal from "@/components/BusModal";
 import fetchSchedules from "@/actions/databaseActions";
+import SelectWrapper from "@/components/SelectWrapper";
 
-const SelectWrapper = ({ label, value, onChange, options }) => (
-  <FormControl fullWidth size="small">
-    <InputLabel>{label}</InputLabel>
-    <Select value={value} onChange={onChange} label={label}>
-      {options.map((option) => (
-        <MenuItem key={option} value={option}>
-          {option}
-        </MenuItem>
-      ))}
-    </Select>
-  </FormControl>
-);
+// const SelectWrapper = ({ label, value, onChange, options, icon }) => (
+//   <FormControl
+//     fullWidth
+//     size="small"
+//     sx={{
+//       "& .MuiOutlinedInput-root": {
+//         borderRadius: 2,
+//         backgroundColor: "background.paper",
+//         transition: "all 0.2s",
+//         "&:hover": {
+//           backgroundColor: "action.hover",
+//         },
+//       },
+//     }}
+//   >
+//     <InputLabel sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+//       {icon}
+//       {label}
+//     </InputLabel>
+//     <Select
+//       value={value}
+//       onChange={onChange}
+//       label={label}
+//       sx={{ minWidth: { xs: "140px", sm: "200px" } }}
+//     >
+//       {options.map((option) => (
+//         <MenuItem key={option} value={option}>
+//           {option}
+//         </MenuItem>
+//       ))}
+//     </Select>
+//   </FormControl>
+// );
 
 export default function SchedulePage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const busServices = ["AKVA", "CIMEN", "EUL_BUS"];
   const locations = ["LEFKE", "GUZELYURT", "GIRNE", "NICOSIA"];
   const times = ["09:00", "10:00", "11:00", "12:00"];
@@ -120,12 +151,7 @@ export default function SchedulePage() {
       <Box
         key={`${busService}-${index}`}
         sx={{
-          width: {
-            xs: "100%",
-            sm: "calc(50% - 8px)",
-            md: "calc(25% - 12px)",
-          },
-          mb: 2,
+          height: "100%",
         }}
       >
         <BusCard
@@ -139,82 +165,151 @@ export default function SchedulePage() {
     ));
   };
 
+  const swapLocations = () => {
+    setSource(destination);
+    setDestination(source);
+  };
+
   return (
-    <Box sx={{ maxWidth: 1200, margin: "auto", padding: 3 }}>
-      <Box mb={4}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          mb={4}
-        >
-          <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-            NEXT BUS FROM
-          </Typography>
+    <Container maxWidth="sm" sx={{ py: 4 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 2, sm: 4 },
+          borderRadius: 4,
+          boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Stack spacing={4}>
+          {/* Header Section */}
+          <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                color: "transparent",
+                mb: 1,
+              }}
+            >
+              Find Your Next Bus
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Plan your journey across Northern Cyprus
+            </Typography>
+          </Box>
 
-          <Stack direction="column" spacing={2}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <SelectWrapper
-                label="From"
-                value={source}
-                onChange={handleSourceChange}
-                options={locations}
-              />
-              <Typography variant="body1">TO</Typography>
-              <SelectWrapper
-                label="To"
-                value={destination}
-                onChange={handleDestinationChange}
-                options={locations}
-              />
-            </Stack>
+          {/* Search Controls */}
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            alignItems="center"
+          >
+            <SelectWrapper
+              label="From"
+              value={source}
+              onChange={handleSourceChange}
+              options={locations}
+              icon={<LocationOn fontSize="small" color="primary" />}
+            />
 
-            <Stack direction="row" spacing={2} alignItems="center">
-              <SelectWrapper
-                label="Departure Time"
-                value={departureTime}
-                onChange={handleDepartureTimeChange}
-                options={times}
-              />
-              <Typography variant="body1">TO</Typography>
-              <SelectWrapper
-                label="Arrival Time"
-                value={arrivalTime}
-                onChange={handleArrivalTimeChange}
-                options={times}
-              />
-            </Stack>
+            <IconButton
+              onClick={swapLocations}
+              sx={{
+                bgcolor: "background.default",
+                "&:hover": { bgcolor: "action.hover" },
+              }}
+            >
+              <SwapVert />
+            </IconButton>
+
+            <SelectWrapper
+              label="To"
+              value={destination}
+              onChange={handleDestinationChange}
+              options={locations}
+              icon={<LocationOn fontSize="small" color="secondary" />}
+            />
           </Stack>
-        </Stack>
-      </Box>
 
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <>
-          {busServices.map((service) => (
-            <Box key={service}>
-              <Typography variant="h5" sx={{ mb: 2, mt: 4 }}>
-                {service}
-              </Typography>
-              <Stack
-                direction="row"
-                flexWrap="wrap"
-                justifyContent="flex-start"
-                sx={{ gap: 2 }}
-              >
-                {renderBusCards(service)}
-              </Stack>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            alignItems="center"
+          >
+            <SelectWrapper
+              label="Departure"
+              value={departureTime}
+              onChange={handleDepartureTimeChange}
+              options={times}
+              icon={<Schedule fontSize="small" color="primary" />}
+            />
+
+            <SelectWrapper
+              label="Arrival"
+              value={arrivalTime}
+              onChange={handleArrivalTimeChange}
+              options={times}
+              icon={<Schedule fontSize="small" color="secondary" />}
+            />
+          </Stack>
+
+          {/* Results Section */}
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+              <CircularProgress size={40} thickness={4} />
             </Box>
-          ))}
-        </>
-      )}
+          ) : (
+            <Stack spacing={4}>
+              {busServices.map((service) => (
+                <Paper
+                  key={service}
+                  elevation={1}
+                  sx={{
+                    p: 3,
+                    borderRadius: 2,
+                    background: theme.palette.background.default,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      mb: 3,
+                      fontWeight: 600,
+                      color: theme.palette.primary.main,
+                    }}
+                  >
+                    {service}
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gap: 2,
+                      gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "repeat(2, 1fr)",
+                        md: "repeat(3, 1fr)",
+                        lg: "repeat(4, 1fr)",
+                      },
+                    }}
+                  >
+                    {renderBusCards(service)}
+                  </Box>
+                </Paper>
+              ))}
+            </Stack>
+          )}
+        </Stack>
+      </Paper>
 
       <BusModal
         open={modalOpen}
         onClose={handleCloseModal}
         scheduleData={selectedSchedule}
       />
-    </Box>
+    </Container>
   );
 }
