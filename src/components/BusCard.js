@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import PaidIcon from "@mui/icons-material/Paid";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 
 const BusCard = React.memo(
@@ -115,27 +115,35 @@ const BusCard = React.memo(
                 <Stack direction="row" alignItems="center" spacing={1.5}>
                   <LocationOnIcon
                     sx={{
-                      color: theme.palette.secondary.main,
+                      color: "black",
                       fontSize: "1.25rem",
                     }}
                   />
                   <Typography variant="body2" color="text.secondary">
-                    From {location}
+                    From{" "}
+                    <span
+                      style={{
+                        color: color || theme.palette.text.primary,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {location}
+                    </span>
                   </Typography>
                 </Stack>
 
                 <Stack direction="row" alignItems="center" spacing={1.5}>
-                  <PaidIcon
+                  <LocalOfferIcon
                     sx={{
-                      color: theme.palette.success.main,
+                      color: "black",
                       fontSize: "1.25rem",
                     }}
                   />
                   <Typography
                     variant="body2"
                     sx={{
-                      color: theme.palette.success.main,
-                      fontWeight: 500,
+                      color: color || theme.palette.success.main,
+                      fontWeight: 600,
                     }}
                   >
                     {price}
