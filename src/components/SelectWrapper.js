@@ -15,6 +15,7 @@ const SelectWrapper = memo(({ label, value, onChange, options, icon }) => (
         "&:hover": {
           backgroundColor: "action.hover",
         },
+        minWidth: { xs: "140px", sm: "240px", md: "300px" },
       },
     }}
   >
@@ -22,13 +23,7 @@ const SelectWrapper = memo(({ label, value, onChange, options, icon }) => (
       {icon}
       {label}
     </InputLabel>
-    <Select
-      value={value}
-      onChange={onChange}
-      label={label}
-      aria-label={label} // For better accessibility
-      sx={{ minWidth: { xs: "140px", sm: "200px" } }}
-    >
+    <Select value={value} onChange={onChange} label={label} aria-label={label}>
       {options.map((option) => (
         <MenuItem key={option} value={option}>
           {option}

@@ -1,0 +1,45 @@
+/* global.css */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (min-width: 600px) {
+  .stack-container {
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 599px) {
+  .stack-container {
+    width: 100%;
+    padding: 10px;
+  }
+}
