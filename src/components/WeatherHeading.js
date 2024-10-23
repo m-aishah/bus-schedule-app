@@ -32,7 +32,7 @@ export default function WeatherHeading() {
           color: "#1976d2",
         }}
       >
-        Weather Forecast
+        Weather Today
       </Typography>
       {/* Right Weather Icon */}
       <CloudIcon sx={{ fontSize: 40, marginLeft: 1, color: "#90a4ae" }} />

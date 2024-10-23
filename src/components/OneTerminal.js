@@ -27,15 +27,14 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [selectedCity, setSelectedCity] = useState("");
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
-  // Simulate loading time to show the loading indicator
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 3500); // 3.5 seconds delay
 
-    return () => clearTimeout(timer); // Clean up the timer on component unmount
+    return () => clearTimeout(timer);
   }, []);
 
   // Handler to view bus schedules
@@ -56,12 +55,9 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
   };
 
   return (
-    <Box sx={{ maxWidth: 1000, padding: 3, mx: "auto" }}>
+    <Box sx={{ maxWidth: 1000, padding: 3, mx: "auto", marginTop: 7 }}>
       {/* Terminal Name Heading */}
       <TerminalHeading terminalId={id} />
-
-      {/* Bus Companies Heading */}
-      <BusCompaniesHeading />
 
       {/* Loading State */}
       {loading ? (
@@ -103,7 +99,7 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
           <Paper
             elevation={6}
             sx={{
-              padding: 4,
+              padding: 3,
               maxWidth: 500,
               borderRadius: "16px", // Soft rounded edges
               animation: "fadeIn 0.5s ease-in-out", // Smooth appearance animation
@@ -179,8 +175,10 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
               onClick={handleCloseOverlay}
               fullWidth
               sx={{
+                color: "black",
                 marginTop: 3,
-                backgroundColor: "#ff5252",
+                backgroundColor: "white",
+                textTransform: "none",
                 "&:hover": {
                   backgroundColor: "#e64a19",
                 },
