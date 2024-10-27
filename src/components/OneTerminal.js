@@ -10,34 +10,22 @@ import {
   Chip,
   Typography,
   Button,
-  CircularProgress, // Loading indicator
+  CircularProgress,
 } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CurrencyLiraIcon from "@mui/icons-material/CurrencyLira";
 import TerminalHeading from "./TerminalHeading";
-import BusCompaniesHeading from "./BusCompaniesHeading";
 import BusList from "./BusList";
 import WeatherHeading from "./WeatherHeading";
 import WeatherForecast from "./WeatherForecast";
 import Departure from "./OverlayDepature";
 import Price from "./Price";
+import TimeChip from "./TimeChip";
 
-export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
+export default function OneTerminal({ busCompanies, id }) {
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [selectedCity, setSelectedCity] = useState("");
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3500); // 3.5 seconds delay
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Handler to view bus schedules
   const handleViewSchedules = (company) => {
     setSelectedBus(company);
     setIsOverlayOpen(true);
@@ -54,24 +42,44 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
     setIsOverlayOpen(false);
   };
 
+  // Function to display times
+  const displayTimes = (times) => {
+    const sortedTimes = times.sort((a, b) => (a < b ? -1 : 1));
+    const midPoint = Math.ceil(sortedTimes.length / 2);
+    const leftColumn = sortedTimes.slice(0, midPoint);
+    const rightColumn = sortedTimes.slice(midPoint);
+
+    return (
+      <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+        <Grid item xs={6}>
+          {leftColumn.map((time, index) => (
+            <TimeChip time={time} key={index} />
+          ))}
+        </Grid>
+
+        <Grid item xs={6}>
+          {rightColumn.map((time, index) => (
+            <TimeChip time={time} key={index} />
+          ))}
+        </Grid>
+      </Grid>
+    );
+  };
+
   return (
     <Box sx={{ maxWidth: 1000, padding: 3, mx: "auto", marginTop: 7 }}>
-      {/* Terminal Name Heading */}
       <TerminalHeading terminalId={id} />
 
-      {/* Loading State */}
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", margin: 3 }}>
-          <CircularProgress /> {/* Loading spinner */}
-        </Box>
-      ) : (
+      {busCompanies.length > 0 ? (
         <BusList
           busCompanies={busCompanies}
           handleViewSchedules={handleViewSchedules}
         />
+      ) : (
+        <Box sx={{ display: "flex", justifyContent: "center", margin: 3 }}>
+          <CircularProgress /> {/* Loading spinner */}
+        </Box>
       )}
-
-      {/* Weather Forecast */}
       <WeatherHeading />
       <Box sx={{ marginBottom: 3 }}>
         <WeatherForecast terminalId={id} />
@@ -137,31 +145,11 @@ export default function OneTerminal({ terminalHeadingName, busCompanies, id }) {
             {selectedCity && (
               <Box>
                 {/* Display Times */}
-                <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-                  {(selectedDay === "Saturday" || selectedDay === "Sunday"
+                {displayTimes(
+                  selectedDay === "Saturday" || selectedDay === "Sunday"
                     ? selectedBus.schedules.times.weekend
-                    : selectedBus.schedules.times.weekdays
-                  ).map((time, index) => (
-                    <Grid item xs={6} key={index}>
-                      <Chip
-                        // icon={<AccessTimeIcon />}
-                        label={time}
-                        clickable
-                        sx={{
-                          width: "100%",
-                          justifyContent: "center",
-                          backgroundColor: "#1976d2", // Modern blue
-                          color: "#fff",
-                          fontWeight: "bold",
-                          fontSize: "1.2rem",
-                          "&:hover": {
-                            backgroundColor: "#1565c0", // Darker blue hover effect
-                          },
-                        }}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
+                    : selectedBus.schedules.times.weekdays,
+                )}
 
                 {/* Display Price */}
                 <Price price={selectedBus.schedules.price} />
