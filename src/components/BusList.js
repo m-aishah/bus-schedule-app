@@ -32,14 +32,15 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
     <Box sx={{ marginBottom: 4 }}>
       {Object.keys(groupedBusCompanies).map((destination, index) => (
         <Box key={index} sx={{ marginBottom: 5 }}>
-          {/* From-To route (displayed once for all buses going to this destination) */}
+          {/* horizontal line which seperates destinations */}
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center", // Center content horizontally
+              justifyContent: "center",
               alignItems: "center",
-              backgroundColor: "#F0F4F8",
-              padding: 1, // Reduce padding for a thinner appearance
+              backgroundColor: "white", //gradient
+              // backgroundColor: "#F0F4F8",
+              padding: 1,
               borderRadius: "10px",
               marginBottom: 2,
               boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
@@ -86,7 +87,6 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
               </Typography>
             </Box>
           </Box>
-
           {/* Render buses going to this destination */}
           <Grid container spacing={4}>
             {groupedBusCompanies[destination].map((company, companyIndex) => (
@@ -95,13 +95,13 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                   onClick={() => handleViewSchedules(company)}
                   sx={{
                     cursor: "pointer",
-                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
+                    // boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
                     borderRadius: "12px",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    "&:hover": {
-                      transform: "scale(1.01)",
-                      boxShadow: "0 16px 32px rgba(0, 0, 0, 0.2)",
-                    },
+                    // transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    // "&:hover": {
+                    //   transform: "scale(1.01)",
+                    //   boxShadow: "0 16px 32px rgba(0, 0, 0, 0.2)",
+                    // },
                   }}
                 >
                   <CardContent sx={{ padding: 4 }}>

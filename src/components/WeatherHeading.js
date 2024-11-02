@@ -9,7 +9,7 @@ export default function WeatherHeading() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#f0f0f0", // light grey background
+        backgroundColor: "#CECECE", // light grey background
         padding: "10px 20px", // padding for the bubbly effect
         borderRadius: "20px", // rounded corners for the bubbly look
         marginBottom: 3, // space below the heading

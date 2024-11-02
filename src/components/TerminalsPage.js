@@ -30,13 +30,13 @@ export default function TerminalsPage({ terminals }) {
     <Container>
       <Box sx={{ flexGrow: 1, py: 4 }}>
         <Typography
-          variant="h6"
+          variant="h5"
           gutterBottom
           sx={{
             fontWeight: "bold",
             textAlign: "center",
             marginBottom: 4,
-            color: "#1976d2",
+            // color: "#1976d2",
           }}
         >
           Explore Terminals
@@ -67,7 +67,7 @@ export default function TerminalsPage({ terminals }) {
                   <Typography
                     variant="h5"
                     component="h2"
-                    sx={{ fontWeight: "bold", color: "#004d40" }} // Stronger color
+                    sx={{ fontWeight: "bold", color: "black" }} // Stronger color
                     gutterBottom
                   >
                     {terminal.name[0].toUpperCase() + terminal.name.slice(1)}

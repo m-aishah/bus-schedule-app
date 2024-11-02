@@ -41,10 +41,10 @@ const WeatherIcon = ({ weatherCode, hour, temperature, size = 64 }) => {
   const WeatherComposition = () => {
     const getColor = (type) => {
       const colors = {
-        sun: "#ffdd57", // Light yellow
-        moon: "#f0e68c", // Light yellow
-        cloud: "#d3d3d3", // Light gray
-        rain: "#60a5fa", // Light blue
+        sun: "#ffdd57",
+        moon: "#f0e68c",
+        cloud: "#d3d3d3",
+        rain: "#60a5fa",
       };
       return colors[type];
     };
@@ -145,7 +145,7 @@ const CurrentWeather = ({ terminalId }) => {
   return (
     <Card
       sx={{
-        background: gradient,
+        background: "#CECECE", //gradient
         boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
         maxWidth: 1000,
         margin: "0 auto",
