@@ -80,7 +80,7 @@ export default function OneTerminal({ busCompanies, id }) {
           <CircularProgress /> {/* Loading spinner */}
         </Box>
       )}
-      <WeatherHeading />
+      {/* <WeatherHeading /> */}
       <Box sx={{ marginBottom: 3 }}>
         <WeatherForecast terminalId={id} />
       </Box>

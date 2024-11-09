@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Box, Paper, Typography, CircularProgress } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import MapIcon from "@mui/icons-material/Map";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -8,6 +9,50 @@ import RouteIcon from "@mui/icons-material/Route";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
+
+// Styled Components to match navbar design system
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  maxWidth: "1100px",
+  margin: "0 auto",
+  marginBottom: theme.spacing(6),
+  background: "rgb(93,137,216)",
+  borderRadius: theme.breakpoints.down("md") ? "0 0 24px 24px" : "32px",
+  position: "relative",
+  overflow: "hidden",
+  boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.03)",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+}));
+
+const InfoCard = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  backgroundColor: "rgba(255,255,255,0.1)",
+  backdropFilter: "blur(10px)",
+  border: "1px solid rgba(255,255,255,0.2)",
+  borderRadius: "8px",
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1),
+  transition: "all 0.3s ease",
+  "&:hover": {
+    transform: "translateY(-1px)",
+    backgroundColor: "rgba(255,255,255,0.15)",
+  },
+}));
+
+const MapButton = styled(Paper)(({ theme }) => ({
+  padding: "8px 24px",
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1),
+  backgroundColor: "#2196f3",
+  borderRadius: "8px",
+  transition: "all 0.3s ease",
+  cursor: "pointer",
+  "&:hover": {
+    backgroundColor: "rgba(33, 150, 243, 0.9)",
+    transform: "translateY(-1px)",
+  },
+}));
 
 export default function TerminalHeading({ terminalId }) {
   const [coordinates, setCoordinates] = useState(null);
@@ -49,50 +94,25 @@ export default function TerminalHeading({ terminalId }) {
           justifyContent: "center",
           alignItems: "center",
           height: "12rem",
-          background: "linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%)",
+          background: "white",
+          boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.03)",
         }}
       >
-        <CircularProgress size={40} />
+        <CircularProgress sx={{ color: "#2196f3" }} size={40} />
       </Box>
     );
   }
 
   if (!coordinates) {
     return (
-      <Typography align="center" color="text.secondary">
+      <Typography align="center" sx={{ color: "rgba(0, 0, 0, 0.6)" }}>
         Location data unavailable
       </Typography>
     );
   }
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        maxWidth: "1100px",
-        mx: "auto",
-        mb: 6,
-        background: "linear-gradient(135deg, #0d47a1 0%, #1565c0 100%)",
-        borderRadius: { xs: "0 0 24px 24px", md: "32px" },
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      {/* Decorative Background Elements */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          width: "300px",
-          height: "300px",
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%)",
-          borderRadius: "50%",
-          transform: "translate(50%, -50%)",
-        }}
-      />
-
+    <StyledPaper elevation={0}>
       <Box sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
         {/* Header Section */}
         <Box
@@ -109,36 +129,35 @@ export default function TerminalHeading({ terminalId }) {
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
               <DirectionsBusIcon
                 sx={{
-                  color: "#FFD700",
+                  color: "white",
                   fontSize: "2.5rem",
                   mr: 2,
-                  animation: "bounce 2s infinite",
-                  "@keyframes bounce": {
-                    "0%, 100%": { transform: "translateY(0)" },
-                    "50%": { transform: "translateY(-10px)" },
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    transform: "scale(1.1)",
                   },
-                  filter: "drop-shadow(0 0 8px rgba(255, 215, 0, 0.3))",
                 }}
               />
               <Typography
                 variant="h5"
                 sx={{
-                  fontWeight: 800,
-                  color: "#fff",
-                  fontSize: { xs: "1.75rem", sm: "2rem", md: "2rem" },
-                  textShadow: "2px 2px 4px rgba(0,0,0,0.2)",
-                  letterSpacing: "-0.5px",
+                  fontWeight: "bold",
+                  color: "white",
+                  fontSize: { xs: "1.75rem", sm: "2rem" },
+                  background:
+                    "linear-gradient(45deg, #fff, rgba(255,255,255,0.8))",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
                 }}
               >
                 {name[0].toUpperCase() + name.slice(1)} Terminal
               </Typography>
             </Box>
             <Typography
-              variant="h6"
               sx={{
                 color: "rgba(255,255,255,0.85)",
-                maxWidth: "600px",
-                fontSize: { xs: "1rem", md: "1.1rem" },
+                fontSize: { xs: "0.9rem", md: "1rem" },
                 fontWeight: 400,
                 lineHeight: 1.5,
               }}
@@ -158,83 +177,32 @@ export default function TerminalHeading({ terminalId }) {
             mt: 4,
           }}
         >
-          <Paper
-            sx={{
-              p: 2,
-              bgcolor: "rgba(255,255,255,0.1)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: 2,
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <AccessTimeIcon
-              sx={{
-                color: "#4CAF50",
-                fontSize: "1.5rem",
-                filter: "drop-shadow(0 0 4px rgba(76, 175, 80, 0.3))",
-              }}
-            />
+          <InfoCard>
+            <AccessTimeIcon sx={{ color: "white" }} />
             <Typography
-              sx={{ color: "#fff", fontSize: "0.9rem", fontWeight: 500 }}
+              sx={{ color: "white", fontSize: "0.9rem", fontWeight: 500 }}
             >
               24/7 Service
             </Typography>
-          </Paper>
+          </InfoCard>
 
-          <Paper
-            sx={{
-              p: 2,
-              bgcolor: "rgba(255,255,255,0.1)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: 2,
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <RouteIcon
-              sx={{
-                color: "#FF9800",
-                fontSize: "1.5rem",
-                filter: "drop-shadow(0 0 4px rgba(255, 152, 0, 0.3))",
-              }}
-            />
+          <InfoCard>
+            <RouteIcon sx={{ color: "white" }} />
             <Typography
-              sx={{ color: "#fff", fontSize: "0.9rem", fontWeight: 500 }}
+              sx={{ color: "white", fontSize: "0.9rem", fontWeight: 500 }}
             >
               Multiple Routes
             </Typography>
-          </Paper>
+          </InfoCard>
 
-          <Paper
-            sx={{
-              p: 2,
-              bgcolor: "rgba(255,255,255,0.1)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: 2,
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <CalendarTodayIcon
-              sx={{
-                color: "#E91E63",
-                fontSize: "1.5rem",
-                filter: "drop-shadow(0 0 4px rgba(233, 30, 99, 0.3))",
-              }}
-            />
+          <InfoCard>
+            <CalendarTodayIcon sx={{ color: "white" }} />
             <Typography
-              sx={{ color: "#fff", fontSize: "0.9rem", fontWeight: 500 }}
+              sx={{ color: "white", fontSize: "0.9rem", fontWeight: 500 }}
             >
               Daily Schedules
             </Typography>
-          </Paper>
+          </InfoCard>
 
           <Link
             href={`https://www.google.com/maps?q=${coordinates.lat},${coordinates.lng}`}
@@ -242,45 +210,21 @@ export default function TerminalHeading({ terminalId }) {
             rel="noopener noreferrer"
             style={{ textDecoration: "none" }}
           >
-            <Paper
-              sx={{
-                px: 3,
-                py: 1.5,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                bgcolor: "#2196F3",
-                borderRadius: "100px",
-                transition: "all 0.3s ease",
-                boxShadow: "0 4px 12px rgba(33, 150, 243, 0.3)",
-                cursor: "pointer",
-                "&:hover": {
-                  bgcolor: "#1976D2",
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 6px 16px rgba(33, 150, 243, 0.4)",
-                },
-              }}
-            >
-              <MapIcon
-                sx={{
-                  color: "#fff",
-                  fontSize: "1.5rem",
-                  filter: "drop-shadow(0 0 4px rgba(255, 255, 255, 0.3))",
-                }}
-              />
+            <MapButton>
+              <MapIcon sx={{ color: "white" }} />
               <Typography
                 sx={{
-                  color: "#fff",
-                  fontWeight: 600,
-                  fontSize: "0.95rem",
+                  color: "white",
+                  fontWeight: 500,
+                  fontSize: "0.9rem",
                 }}
               >
                 View Map
               </Typography>
-            </Paper>
+            </MapButton>
           </Link>
         </Box>
       </Box>
-    </Paper>
+    </StyledPaper>
   );
 }

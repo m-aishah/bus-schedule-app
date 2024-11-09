@@ -145,7 +145,7 @@ const CurrentWeather = ({ terminalId }) => {
   return (
     <Card
       sx={{
-        background: "#CECECE", //gradient
+        background: "rgb(93,137,216)", //gradient
         boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
         maxWidth: 1000,
         margin: "0 auto",
