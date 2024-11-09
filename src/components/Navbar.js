@@ -12,41 +12,25 @@ import {
   ListItem,
   ListItemText,
   Container,
+  Fade,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Link from "next/link";
 import { Menu, Bus, Home, Calendar, Mail, UserCog, X } from "lucide-react";
 
-// Styled Components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: "white",
   color: theme.palette.text.primary,
   boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.03)",
   borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
   backdropFilter: "blur(10px)",
-  "&::after": {
-    content: '""',
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: "2px",
-    background: "linear-gradient(90deg, #2196f3, #e91e63, #2196f3)",
-    backgroundSize: "200% 100%",
-    animation: "gradient 15s ease infinite",
-  },
-  "@keyframes gradient": {
-    "0%": { backgroundPosition: "0% 50%" },
-    "50%": { backgroundPosition: "100% 50%" },
-    "100%": { backgroundPosition: "0% 50%" },
-  },
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  borderRadius: "8px",
+  borderRadius: "20px",
   textTransform: "none",
-  padding: "8px 16px",
-  marginLeft: "8px",
+  padding: "8px 20px",
+  marginLeft: "12px",
   color: theme.palette.text.primary,
   transition: "all 0.3s ease",
   fontSize: "0.9rem",
@@ -54,20 +38,32 @@ const StyledButton = styled(Button)(({ theme }) => ({
   alignItems: "center",
   gap: "6px",
   "&:hover": {
-    backgroundColor: "rgba(33, 150, 243, 0.04)",
+    backgroundColor: "rgba(33, 150, 243, 0.08)",
     transform: "translateY(-1px)",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.04)",
   },
+}));
+
+const ActiveIndicator = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  left: 0,
+  width: "3px",
+  height: "70%",
+  backgroundColor: "#2196f3",
+  borderRadius: "0 4px 4px 0",
+  transition: "opacity 0.3s ease",
 }));
 
 const menuItems = [
   { text: "Home", icon: <Home size={18} />, path: "/" },
   { text: "Schedule", icon: <Calendar size={18} />, path: "/schedule" },
   { text: "Contact", icon: <Mail size={18} />, path: "/contact" },
-  { text: "Admin", icon: <UserCog size={18} />, path: "/admin" },
+  // { text: "Admin", icon: <UserCog size={18} />, path: "/admin" },
 ];
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState("/");
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -79,6 +75,8 @@ const Navbar = () => {
         height: "100%",
         backgroundColor: "white",
         padding: 0,
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {/* Drawer Header */}
@@ -89,6 +87,7 @@ const Navbar = () => {
           justifyContent: "space-between",
           padding: "16px",
           borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+          backgroundColor: "rgba(33, 150, 243, 0.02)",
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -96,14 +95,11 @@ const Navbar = () => {
           <Typography
             variant="h6"
             sx={{
-              fontWeight: "bold",
-              background: "linear-gradient(45deg, #2196f3, #e91e63)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              fontWeight: 600,
+              color: "black",
             }}
           >
-            BusTracker-CY
+            Bus Tracker
           </Typography>
         </Box>
         <IconButton onClick={handleDrawerToggle}>
@@ -112,34 +108,76 @@ const Navbar = () => {
       </Box>
 
       {/* Drawer Content */}
-      <List sx={{ padding: 2 }}>
+      <List sx={{ padding: "16px", flex: 1 }}>
         {menuItems.map((item) => (
-          <ListItem
-            key={item.text}
-            component={Link}
-            href={item.path}
-            sx={{
-              borderRadius: "8px",
-              mb: 1,
-              transition: "all 0.3s ease",
-              "&:hover": {
-                backgroundColor: "rgba(33, 150, 243, 0.04)",
-                transform: "translateX(4px)",
-              },
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              {item.icon}
-              <ListItemText
-                primary={item.text}
-                primaryTypographyProps={{
-                  sx: { fontWeight: 500 },
+          <Fade in={true} key={item.text} timeout={500}>
+            <ListItem
+              component={Link}
+              href={item.path}
+              sx={{
+                borderRadius: "12px",
+                mb: 1,
+                position: "relative",
+                padding: "12px 16px",
+                transition: "all 0.3s ease",
+                backgroundColor:
+                  activeItem === item.path
+                    ? "rgba(33, 150, 243, 0.04)"
+                    : "transparent",
+                "&:hover": {
+                  backgroundColor: "rgba(33, 150, 243, 0.08)",
+                  transform: "translateX(4px)",
+                },
+              }}
+              onClick={() => {
+                setActiveItem(item.path);
+                handleDrawerToggle();
+              }}
+            >
+              {activeItem === item.path && <ActiveIndicator />}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  ml: activeItem === item.path ? 1 : 0,
                 }}
-              />
-            </Box>
-          </ListItem>
+              >
+                <Box
+                  sx={{
+                    color: activeItem === item.path ? "#2196f3" : "black",
+                    transition: "color 0.3s ease",
+                  }}
+                >
+                  {item.icon}
+                </Box>
+                <ListItemText
+                  primary={item.text}
+                  primaryTypographyProps={{
+                    sx: {
+                      fontWeight: activeItem === item.path ? 600 : 500,
+                      color: activeItem === item.path ? "#2196f3" : "black",
+                    },
+                  }}
+                />
+              </Box>
+            </ListItem>
+          </Fade>
         ))}
       </List>
+
+      <Box
+        sx={{
+          padding: "16px",
+          borderTop: "1px solid rgba(0, 0, 0, 0.06)",
+          backgroundColor: "rgba(33, 150, 243, 0.02)",
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="caption" sx={{ color: "text.secondary" }}>
+          Version 1.0
+        </Typography>
+      </Box>
     </Box>
   );
 
@@ -162,9 +200,6 @@ const Navbar = () => {
                 color="#2196f3"
                 style={{
                   transition: "transform 0.3s ease",
-                  "&:hover": {
-                    transform: "scale(1.1)",
-                  },
                 }}
               />
               <Typography
@@ -172,13 +207,10 @@ const Navbar = () => {
                 sx={{
                   fontWeight: "bold",
                   fontSize: { xs: "1rem", md: "1.25rem" },
-                  background: "linear-gradient(45deg, #2196f3, #e91e63)",
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
+                  color: "black",
                 }}
               >
-                Bus Tracker-CY
+                Bus Tracker
               </Typography>
             </Box>
 
@@ -188,6 +220,7 @@ const Navbar = () => {
                 display: { xs: "none", md: "flex" },
                 alignItems: "center",
                 ml: "auto",
+                gap: 1,
               }}
             >
               {menuItems.map((item) => (
@@ -196,6 +229,17 @@ const Navbar = () => {
                   component={Link}
                   href={item.path}
                   startIcon={item.icon}
+                  sx={{
+                    backgroundColor:
+                      activeItem === item.path
+                        ? "rgba(33, 150, 243, 0.08)"
+                        : "transparent",
+                    fontWeight: activeItem === item.path ? 600 : 500,
+                    "&:hover": {
+                      backgroundColor: "rgba(33, 150, 243, 0.12)",
+                    },
+                  }}
+                  onClick={() => setActiveItem(item.path)}
                 >
                   {item.text}
                 </StyledButton>
@@ -212,7 +256,7 @@ const Navbar = () => {
                 display: { xs: "block", md: "none" },
                 ml: "auto",
                 "&:hover": {
-                  backgroundColor: "rgba(33, 150, 243, 0.04)",
+                  backgroundColor: "rgba(33, 150, 243, 0.08)",
                 },
               }}
             >
@@ -233,10 +277,14 @@ const Navbar = () => {
         PaperProps={{
           sx: {
             width: "100%",
-            maxWidth: "320px",
+            maxWidth: "300px",
             borderTopLeftRadius: "16px",
             borderBottomLeftRadius: "16px",
+            boxShadow: "-4px 0 16px rgba(0, 0, 0, 0.05)",
           },
+        }}
+        SlideProps={{
+          timeout: 300,
         }}
       >
         {drawer}
