@@ -32,6 +32,7 @@ const SelectWrapper = memo(({ label, value, onChange, options, icon }) => (
     </Select>
   </FormControl>
 ));
+SelectWrapper.displayName = "SelectWrapper";
 
 SelectWrapper.propTypes = {
   label: PropTypes.string.isRequired,

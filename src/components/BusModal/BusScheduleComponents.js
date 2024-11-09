@@ -87,7 +87,7 @@ export const BusSchedule = ({ scheduleData }) => {
         <Stack direction="row" spacing={4}>
           <Stack spacing={2} sx={{ minWidth: 200 }}>
             <Typography variant="subtitle1" fontWeight="500">
-              Today's Schedule
+              Today&apos;s Schedule
             </Typography>
             <Stack direction="row" spacing={1} alignItems="center">
               <BusIcon size={16} />
@@ -190,7 +190,11 @@ export const BusStops = ({ scheduleData }) => {
         }}
       >
         <Box sx={{ height: "100%" }}>
-          <MapContainer busStops={busStops} />
+          <MapContainer
+            busStops={busStops}
+            source={source}
+            destination={destination}
+          />
         </Box>
       </Paper>
     </Box>

@@ -157,5 +157,6 @@ const BusCard = React.memo(
     );
   }
 );
+BusCard.displayName = "BusCard";
 
 export default BusCard;
