@@ -9,7 +9,7 @@ export default function WeatherHeading() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#f0f0f0", // light grey background
+        backgroundColor: "#CECECE", // light grey background
         padding: "10px 20px", // padding for the bubbly effect
         borderRadius: "20px", // rounded corners for the bubbly look
         marginBottom: 3, // space below the heading
@@ -32,7 +32,7 @@ export default function WeatherHeading() {
           color: "#1976d2",
         }}
       >
-        Weather Forecast
+        Weather Today
       </Typography>
       {/* Right Weather Icon */}
       <CloudIcon sx={{ fontSize: 40, marginLeft: 1, color: "#90a4ae" }} />

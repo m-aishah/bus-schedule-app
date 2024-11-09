@@ -6,9 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 
-// Styled Paper Component for terminal cards
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: "#f5f5f5",
+  // backgroundColor: "#f5f5f5",
   padding: theme.spacing(2),
   display: "flex",
   alignItems: "center",
@@ -31,13 +30,13 @@ export default function TerminalsPage({ terminals }) {
     <Container>
       <Box sx={{ flexGrow: 1, py: 4 }}>
         <Typography
-          variant="h6"
+          variant="h5"
           gutterBottom
           sx={{
             fontWeight: "bold",
             textAlign: "center",
             marginBottom: 4,
-            color: "#1976d2",
+            // color: "#1976d2",
           }}
         >
           Explore Terminals
@@ -68,10 +67,10 @@ export default function TerminalsPage({ terminals }) {
                   <Typography
                     variant="h5"
                     component="h2"
-                    sx={{ fontWeight: "bold", color: "#004d40" }} // Stronger color
+                    sx={{ fontWeight: "bold", color: "black" }} // Stronger color
                     gutterBottom
                   >
-                    {terminal.name}
+                    {terminal.name[0].toUpperCase() + terminal.name.slice(1)}
                   </Typography>
                   <Typography
                     variant="body1"
@@ -86,17 +85,18 @@ export default function TerminalsPage({ terminals }) {
                     color="primary"
                     sx={{
                       backgroundColor: "#0288d1",
-                      borderRadius: "50px", // Rounded button
+                      borderRadius: "50px",
                       padding: "8px 16px",
-                      textTransform: "none", // No uppercase text
+                      width: "100px",
+                      textTransform: "none",
                       "&:hover": {
-                        backgroundColor: "#0277bd", // Darker blue on hover
+                        backgroundColor: "#0277bd",
                       },
                     }}
                     component={Link}
                     href={`/oneterminal/${terminal.id}`}
                   >
-                    View More
+                    View
                   </Button>
                 </Box>
               </Item>
