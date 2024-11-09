@@ -6,12 +6,11 @@ import {
   CardContent,
   Typography,
   Button,
-  IconButton,
 } from "@mui/material";
 import PlaceIcon from "@mui/icons-material/Place";
 import PhoneIcon from "@mui/icons-material/Phone";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import BusAlertIcon from "@mui/icons-material/BusAlert";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 // Group the bus companies by the destination
 const groupByDestination = (busCompanies) => {
@@ -32,34 +31,77 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
   return (
     <Box sx={{ marginBottom: 4 }}>
       {Object.keys(groupedBusCompanies).map((destination, index) => (
-        <Box key={index} sx={{ marginBottom: 6 }}>
-          {/* Destination Heading */}
-          <Typography
-            variant="h4"
+        <Box key={index} sx={{ marginBottom: 5 }}>
+          {/* horizontal line which seperates destinations */}
+          <Box
             sx={{
-              fontWeight: "700",
-              color: "#1E88E5", // Modern blue shade
-              marginBottom: 4,
-              borderBottom: "2px solid #1E88E5", // Separator line
-              paddingBottom: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "white", //gradient
+              // backgroundColor: "#F0F4F8",
+              padding: 1,
+              borderRadius: "10px",
+              marginBottom: 2,
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
             }}
-          ></Typography>
-
+          >
+            <PlaceIcon
+              sx={{ color: "#1E88E5", marginRight: 1, fontSize: "1.5rem" }}
+            />
+            {/* Wrapping in separate boxes for better alignment */}
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "600",
+                  color: "#333",
+                  textAlign: "center",
+                  letterSpacing: "0.5px",
+                  marginRight: 1, // Space between from text and arrow
+                }}
+              >
+                {/* Assuming all buses have the same 'from' location for the same destination */}
+                {groupedBusCompanies[
+                  destination
+                ][0].schedules.from[0].toUpperCase() +
+                  groupedBusCompanies[destination][0].schedules.from.slice(1)}
+              </Typography>
+              <ArrowForwardIcon
+                sx={{
+                  marginX: 0.5, // Reduced margin
+                  fontSize: "1.25rem", // Smaller arrow size for better alignment
+                  color: "#1E88E5",
+                }}
+              />
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "600",
+                  color: "#333",
+                  textAlign: "center",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                {destination[0].toUpperCase() + destination.slice(1)}
+              </Typography>
+            </Box>
+          </Box>
           {/* Render buses going to this destination */}
           <Grid container spacing={4}>
             {groupedBusCompanies[destination].map((company, companyIndex) => (
-              <Grid item xs={12} md={6} key={companyIndex}>
+              <Grid item xs={12} md={6} sm={6} key={companyIndex}>
                 <Card
                   onClick={() => handleViewSchedules(company)}
                   sx={{
                     cursor: "pointer",
-                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
+                    // boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
                     borderRadius: "12px",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    "&:hover": {
-                      transform: "scale(1.04)",
-                      boxShadow: "0 16px 32px rgba(0, 0, 0, 0.2)",
-                    },
+                    // transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    // "&:hover": {
+                    //   transform: "scale(1.01)",
+                    //   boxShadow: "0 16px 32px rgba(0, 0, 0, 0.2)",
+                    // },
                   }}
                 >
                   <CardContent sx={{ padding: 4 }}>
@@ -76,47 +118,14 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                         variant="h5"
                         sx={{
                           fontWeight: "700",
-                          color: "#1E88E5", // Updated to modern blue
+                          color: "rgb(93,137,216)", // Updated to modern blue
                         }}
                       >
-                        {company.name}
+                        {company.name[0].toUpperCase() + company.name.slice(1)}
                       </Typography>
                       <BusAlertIcon
                         sx={{ fontSize: "2rem", color: "#1E88E5" }}
                       />
-                    </Box>
-
-                    {/* Destination section */}
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        backgroundColor: "#F0F4F8",
-                        padding: 2,
-                        borderRadius: "8px",
-                        marginBottom: 2,
-                      }}
-                    >
-                      <PlaceIcon sx={{ color: "#1E88E5", marginRight: 1 }} />
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontWeight: "600",
-                          display: "flex",
-                          alignItems: "center",
-                          color: "#333", // Darker font color
-                        }}
-                      >
-                        {company.schedules.from}
-                        <ArrowForwardIcon
-                          sx={{
-                            marginX: 1,
-                            fontSize: "1.5rem",
-                            color: "#1E88E5",
-                          }}
-                        />
-                        {company.schedules.to}
-                      </Typography>
                     </Box>
 
                     {/* Contact details */}
@@ -142,16 +151,20 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                         handleViewSchedules(company);
                       }}
                       sx={{
-                        width: "100%",
+                        width: "auto",
+                        justifyContent: "center",
+                        borderRadius: "50px",
+                        display: "flex",
                         fontWeight: "600",
-                        backgroundColor: "#1E88E5",
+                        flexDirection: "row",
+                        backgroundColor: "rgb(93,137,216)",
                         textTransform: "none",
                         "&:hover": {
                           backgroundColor: "#1565C0",
                         },
                       }}
                     >
-                      View Bus Schedules
+                      View Schedules
                     </Button>
                   </CardContent>
                 </Card>

@@ -2,6 +2,7 @@
 "use client";
 import TerminalsPage from "../../components/TerminalsPage";
 import { useState, useEffect } from "react";
+import { Box } from "@mui/material";
 import fetchAllDocuments from "./utils/fetchAllTerminals";
 const App = () => {
   const [terminals, setTerminals] = useState([]);
@@ -20,13 +21,9 @@ const App = () => {
   }, []);
 
   return (
-    <div>
-      {/* <OneTerminal /> */}
+    <Box sx={{ paddingTop: "100px" }}>
       <TerminalsPage terminals={terminals} />
-      {/* Map UI */}
-      {/* Bus stops and their respective arrival times */}
-      {/* Bus schedule */}
-    </div>
+    </Box>
   );
 };
 export default App;

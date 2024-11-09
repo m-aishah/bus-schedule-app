@@ -11,7 +11,7 @@ import {
   Chip,
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 const Departure = ({ destination }) => {
   return (
     <Paper
@@ -33,7 +33,7 @@ const Departure = ({ destination }) => {
         }}
       >
         {/* Adding a location pin icon */}
-        <AccessTimeIcon
+        <LocationOnIcon
           sx={{
             fontSize: 30,
             color: "#1976d2", // Color to match the theme
@@ -45,7 +45,7 @@ const Departure = ({ destination }) => {
           gutterBottom
           sx={{
             fontWeight: "bold",
-            fontSize: "1.5rem",
+            fontSize: "1.2rem",
             color: "#333", // dark color for good contrast
           }}
         >
