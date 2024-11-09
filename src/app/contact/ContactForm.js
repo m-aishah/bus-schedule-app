@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm, ValidationError } from "@formspree/react";
+import { useForm } from "@formspree/react";
 import {
   TextField,
   Button,
@@ -10,8 +10,55 @@ import {
   Alert,
   Fade,
 } from "@mui/material";
-import { Email, Message } from "@mui/icons-material"; // Import Material Icons
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // For success message
+import { Email, Message } from "@mui/icons-material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { styled } from "@mui/material/styles";
+
+// Styled components to match navbar styling
+const StyledContainer = styled(Box)(({ theme }) => ({
+  backgroundColor: "rgba(255, 255, 255, 0.9)",
+  backdropFilter: "blur(10px)",
+  boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+  borderRadius: "16px",
+  transition: "all 0.3s ease-in-out",
+  "&:hover": {
+    boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.12)",
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  backgroundColor: "#2196F3",
+  borderRadius: "50px",
+  color: "white",
+  padding: "12px 32px",
+  textTransform: "none",
+  fontSize: "16px",
+  fontWeight: 500,
+  minWidth: "140px",
+  display: "flex",
+  gap: "8px",
+  alignItems: "center",
+  transition: "all 0.2s ease",
+  "&:hover": {
+    backgroundColor: "#1976D2",
+    transform: "translateY(-2px)",
+    boxShadow: "0 4px 12px rgba(33, 150, 243, 0.3)",
+  },
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  "& .MuiOutlinedInput-root": {
+    borderRadius: "12px",
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    transition: "all 0.3s ease-in-out",
+    "&:hover": {
+      backgroundColor: "rgba(255, 255, 255, 0.9)",
+    },
+    "&.Mui-focused": {
+      backgroundColor: "rgba(255, 255, 255, 1)",
+    },
+  },
+}));
 
 function ContactForm() {
   const [state, handleSubmit] = useForm("xbljdoee");
@@ -20,9 +67,7 @@ function ContactForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
 
   const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+    if (reason === "clickaway") return;
     setOpenSnackbar(false);
     setErrorSnackbarOpen(false);
   };
@@ -30,82 +75,77 @@ function ContactForm() {
   React.useEffect(() => {
     if (state.succeeded) {
       setOpenSnackbar(true);
-    } else if (state.errors && state.errors.length > 0) {
-      // Ensure state.errors is defined
-      setErrorMessage(
-        "Email not sent. Please check your email address or entered details.",
-      );
+    } else if (state.errors?.length > 0) {
+      setErrorMessage("Please check your email address and try again.");
       setErrorSnackbarOpen(true);
     }
   }, [state.succeeded, state.errors]);
 
   return (
-    <Box
+    <StyledContainer
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        maxWidth: 500,
-        margin: "0 auto",
-        padding: 4,
-        borderRadius: 2,
-        boxShadow: 3,
-        backgroundColor: "background.paper",
-        transition: "0.3s ease-in-out",
-        "&:hover": {
-          boxShadow: 6, // Shadow effect on hover
-        },
+        maxWidth: 600,
+        mx: "auto",
+        p: { xs: 3, md: 4 },
+        mt: 8,
       }}
     >
-      <Typography
-        variant="h4"
-        align="center"
-        sx={{ fontWeight: "bold", mb: 3 }}
-      >
-        Contact Us
-      </Typography>
-      <Typography
-        variant="body1"
-        align="center"
-        sx={{ mb: 4, color: "text.secondary" }}
-      >
-        We value your feedback! Please use this form to report any issues,
-        suggestions, or questions you may have. We will get back to you as soon
-        as possible.
-      </Typography>
-
       {state.succeeded ? (
         <Fade in={true} timeout={500}>
           <Box
-            className="text-center p-8 bg-green-50 rounded-lg"
             sx={{
-              marginBottom: 3,
+              textAlign: "center",
+              p: 4,
+              backgroundColor: "rgba(209, 250, 229, 0.4)",
+              borderRadius: "12px",
               border: "1px solid #d1fae5",
-              transition: "0.3s ease-in-out",
             }}
           >
             <CheckCircleIcon
-              className="text-green-500 mb-4"
-              sx={{ fontSize: 56 }}
+              sx={{ fontSize: 56, color: "success.main", mb: 2 }}
             />
-            <Typography variant="h5" className="text-green-700 mb-2">
+            <Typography variant="h5" sx={{ color: "success.dark", mb: 1 }}>
               Message Sent Successfully!
             </Typography>
-            <Typography variant="body1" className="text-green-600">
-              Thank you for reaching out. We will get back to you within 24
-              hours.
+            <Typography variant="body1" sx={{ color: "success.dark" }}>
+              We'll get back to you within 24 hours.
             </Typography>
           </Box>
         </Fade>
       ) : (
         <>
-          <Box mb={3}>
-            <TextField
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: "bold",
+              mb: 1,
+              textAlign: "center",
+            }}
+          >
+            Contact Us
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              mb: 4,
+              color: "text.secondary",
+              textAlign: "center",
+            }}
+          >
+            We value your feedback! Please use this form to report any issues,
+            suggestions, or questions you may have. We will get back to you as
+            soon as possible.
+          </Typography>
+
+          <Box sx={{ mb: 3 }}>
+            <StyledTextField
               id="email"
               label="Email Address"
               type="email"
               name="email"
               fullWidth
-              variant="outlined"
               required
               InputProps={{
                 startAdornment: (
@@ -114,29 +154,17 @@ function ContactForm() {
                   </InputAdornment>
                 ),
               }}
-              sx={{
-                borderRadius: 2, // Increased border radius for modern look
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2, // Consistent radius with the TextField
-                },
-              }}
-            />
-            <ValidationError
-              prefix="Email"
-              field="email"
-              errors={state.errors}
-              sx={{ color: "error.main", mt: 1 }} // Error message styling
             />
           </Box>
-          <Box mb={4}>
-            <TextField
+
+          <Box sx={{ mb: 4 }}>
+            <StyledTextField
               id="message"
               label="Message"
               name="message"
               multiline
               rows={4}
               fullWidth
-              variant="outlined"
               required
               InputProps={{
                 startAdornment: (
@@ -145,37 +173,17 @@ function ContactForm() {
                   </InputAdornment>
                 ),
               }}
-              sx={{
-                borderRadius: 2,
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
-                },
-              }}
-            />
-            <ValidationError
-              prefix="Message"
-              field="message"
-              errors={state.errors}
-              sx={{ color: "error.main", mt: 1 }} // Error message styling
             />
           </Box>
-          <Button
+
+          <StyledButton
             type="submit"
             variant="contained"
-            color="primary"
+            fullWidth
             disabled={state.submitting}
-            sx={{
-              padding: "12px 24px",
-              borderRadius: 25, // Increased border radius for the button
-              margin: "0 auto",
-              display: "block", // Center button
-              "&:hover": {
-                backgroundColor: "primary.dark",
-              },
-            }}
           >
-            {state.submitting ? "Submitting..." : "Submit"}
-          </Button>
+            {state.submitting ? "Sending..." : "Send Message"}
+          </StyledButton>
         </>
       )}
 
@@ -183,11 +191,16 @@ function ContactForm() {
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={handleCloseSnackbar}
           severity="success"
-          sx={{ width: "100%" }}
+          sx={{
+            borderRadius: "12px",
+            backgroundColor: "success.main",
+            color: "white",
+          }}
         >
           Thank you for your message!
         </Alert>
@@ -197,16 +210,19 @@ function ContactForm() {
         open={errorSnackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={handleCloseSnackbar}
           severity="error"
-          sx={{ width: "100%" }}
+          sx={{
+            borderRadius: "12px",
+          }}
         >
           {errorMessage}
         </Alert>
       </Snackbar>
-    </Box>
+    </StyledContainer>
   );
 }
 

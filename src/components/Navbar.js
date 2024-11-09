@@ -52,7 +52,7 @@ const Navbar = () => {
         Bus Tracker
       </Typography>
       <List>
-        {["Home", "Schedule", "Contact", "Admin"].map((text, index) => (
+        {["Home", "Schedule", "Contact"].map((text, index) => (
           <ListItem
             button
             key={index}
