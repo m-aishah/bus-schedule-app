@@ -110,7 +110,7 @@ function ContactForm() {
               Message Sent Successfully!
             </Typography>
             <Typography variant="body1" sx={{ color: "success.dark" }}>
-              We'll get back to you within 24 hours.
+              We&apos;ll get back to you within 24 hours.
             </Typography>
           </Box>
         </Fade>
