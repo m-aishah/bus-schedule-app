@@ -15,7 +15,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   maxWidth: "1100px",
   margin: "0 auto",
   marginBottom: theme.spacing(6),
-  background: "rgb(93,137,216)",
+  background: "linear-gradient(90deg, #2196f3, #e91e63)",
   borderRadius: theme.breakpoints.down("md") ? "0 0 24px 24px" : "32px",
   position: "relative",
   overflow: "hidden",

@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  borderRadius: "8px",
+  borderRadius: "24px",
   textTransform: "none",
   padding: "8px 24px",
   transition: "all 0.3s ease",
