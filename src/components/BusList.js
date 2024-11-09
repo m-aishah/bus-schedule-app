@@ -118,7 +118,7 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                         variant="h5"
                         sx={{
                           fontWeight: "700",
-                          color: "#1E88E5", // Updated to modern blue
+                          color: "rgb(93,137,216)", // Updated to modern blue
                         }}
                       >
                         {company.name[0].toUpperCase() + company.name.slice(1)}
@@ -157,7 +157,7 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                         display: "flex",
                         fontWeight: "600",
                         flexDirection: "row",
-                        backgroundColor: "#1E88E5",
+                        backgroundColor: "rgb(93,137,216)",
                         textTransform: "none",
                         "&:hover": {
                           backgroundColor: "#1565C0",
