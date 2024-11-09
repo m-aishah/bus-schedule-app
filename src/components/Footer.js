@@ -29,14 +29,6 @@ const Footer = () => {
     },
   ];
 
-  const pulseAnimation = {
-    "@keyframes pulse": {
-      "0%": { transform: "scale(1)" },
-      "50%": { transform: "scale(1.1)" },
-      "100%": { transform: "scale(1)" },
-    },
-  };
-
   return (
     <Box
       component="footer"
@@ -45,38 +37,18 @@ const Footer = () => {
         px: { xs: 1, md: 2 },
         mt: "auto",
         backgroundColor: "white",
-        borderTop: "1px solid rgba(0, 0, 0, 0.06)",
+        borderTop: "1px solid rgba(0, 0, 0, 0.08)",
         boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.03)",
-        position: "relative",
-        overflow: "visible",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "2px",
-          background: "linear-gradient(90deg, #2196f3, #e91e63, #2196f3)",
-          backgroundSize: "200% 100%",
-          animation: "gradient 15s ease infinite",
-        },
-        "@keyframes gradient": {
-          "0%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
-          "100%": { backgroundPosition: "0% 50%" },
-        },
-        ...pulseAnimation,
       }}
     >
       <Container maxWidth="lg">
-        {/* Main Content */}
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             justifyContent: "space-between",
             alignItems: "center",
-            gap: { xs: 1.5, md: 2 }, // Reduced gap on mobile
+            gap: { xs: 1.5, md: 2 },
           }}
         >
           {/* Left Side - Bus Tracker Info */}
@@ -85,27 +57,18 @@ const Footer = () => {
               display: "flex",
               alignItems: "center",
               gap: 1,
-              "&:hover": {
-                "& svg": {
-                  animation: "pulse 1s infinite",
-                },
-              },
             }}
           >
             <Bus size={20} color="#2196f3" />
             <Typography
               variant="h6"
-              color="text.primary"
+              color="black"
               sx={{
                 fontSize: { xs: "1rem", md: "1.25rem" },
                 fontWeight: "bold",
-                background: "linear-gradient(45deg, #2196f3, #e91e63)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
               }}
             >
-              Bus Tracker-CY
+              Bus Tracker
             </Typography>
           </Box>
 
@@ -195,18 +158,16 @@ const Footer = () => {
                         transition: "all 0.3s ease",
                         "&:hover": {
                           color: "#2196f3",
-                          transform: "translateY(-1px)",
                         },
                       }}
                     >
                       <IconButton
                         size="small"
                         sx={{
-                          padding: { xs: "4px", md: "8px" }, // Smaller padding on mobile
+                          padding: { xs: "4px", md: "8px" },
                           transition: "all 0.3s ease",
                           "&:hover": {
                             backgroundColor: "rgba(33, 150, 243, 0.04)",
-                            transform: "rotate(10deg)",
                           },
                         }}
                       >
@@ -215,7 +176,7 @@ const Footer = () => {
                       <Typography
                         variant="body2"
                         sx={{
-                          fontSize: { xs: "0.75rem", md: "0.875rem" }, // Smaller font on mobile
+                          fontSize: { xs: "0.75rem", md: "0.875rem" },
                         }}
                       >
                         {dev.name}
