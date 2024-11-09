@@ -82,6 +82,7 @@ export const BusSchedule = ({ scheduleData }) => {
           p: 3,
           bgcolor: theme.palette.background.default,
           borderRadius: 2,
+          alignItems: "center",
         }}
       >
         <Stack direction="row" spacing={4}>
