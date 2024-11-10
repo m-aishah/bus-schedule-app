@@ -126,7 +126,7 @@ export default function SchedulePage() {
 
     setSource(locations[0]);
     setDestination(allowedRoutes[locations[0]][0]);
-  }, [times]);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined" && "geolocation" in navigator) {
@@ -178,10 +178,9 @@ export default function SchedulePage() {
         source.toLowerCase(),
         destination.toLowerCase()
       );
-      setSchedules(fetchedSchedules || {});
+      setSchedules(fetchedSchedules);
     } catch (error) {
       console.error("Error fetching schedules:", error);
-      setSchedules({});
     } finally {
       setLoading(false);
     }
@@ -407,13 +406,84 @@ export default function SchedulePage() {
                         </Box>
                       );
                     })}
+                    {!Object.values(schedules).some(
+                      (schedule) => schedule?.length > 0
+                    ) && (
+                      <Box
+                        sx={{
+                          textAlign: "center",
+                          py: 8,
+                          px: 2,
+                          borderRadius: 2,
+                          bgcolor: "grey.50",
+                        }}
+                      >
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            mb: 2,
+                            color: "text.secondary",
+                            fontWeight: 500,
+                          }}
+                        >
+                          🚌 Whoops! Looks like all our buses are taking a
+                          coffee break!
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary">
+                          Try adjusting your time or route to catch the next
+                          available bus.
+                        </Typography>
+                      </Box>
+                    )}
                   </Stack>
                 ) : (
                   <Box sx={{ mt: 2 }}>
-                    <CardSlider
-                      cards={renderBusCards(activeTab.toUpperCase())}
-                      isMobile={isMobile}
-                    />
+                    {setUpScheduleDataByService(
+                      schedules,
+                      activeTab.toUpperCase()
+                    ).times.length > 0 ? (
+                      <CardSlider
+                        cards={renderBusCards(activeTab.toUpperCase())}
+                        isMobile={isMobile}
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          textAlign: "center",
+                          py: 8,
+                          px: 2,
+                          borderRadius: 2,
+                          bgcolor: "grey.50",
+                        }}
+                      >
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            mb: 2,
+                            color: "text.secondary",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {(() => {
+                            const messages = {
+                              akva: "🌊 AKVA buses are currently swimming elsewhere!",
+                              cimen:
+                                "🌿 Looks like CIMEN buses are out touching grass!",
+                              eul_bus:
+                                "📚 EUL buses are busy studying for their next route!",
+                            };
+                            return (
+                              messages[activeTab] ||
+                              "🚌 No buses available at the moment!"
+                            );
+                          })()}
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary">
+                          Try adjusting your search criteria to find available
+                          rides.
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                 )}
               </Box>
