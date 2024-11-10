@@ -3,8 +3,6 @@ import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Box, Button } from "@mui/material";
-import RoomIcon from "@mui/icons-material/Room";
-import CircleIcon from "@mui/icons-material/Circle";
 
 const LeafletMap = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -68,18 +66,24 @@ const MapContainer = ({ busStops, source, destination }) => {
   return (
     <Box
       sx={{
-        height: { xs: 300, sm: 400 },
+        height: "100%",
         width: "100%",
-        borderRadius: 3,
-        overflow: "hidden",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
         position: "relative",
+        "& .leaflet-container": {
+          height: "100%",
+          width: "100%",
+          borderRadius: "8px",
+        },
       }}
     >
       <LeafletMap
         center={sourceLocation || [35.2456, 33.0266]}
         zoom={10}
-        style={{ height: "100%", width: "100%" }}
+        style={{
+          height: "100%",
+          width: "100%",
+          zIndex: 1,
+        }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -113,7 +117,7 @@ const MapContainer = ({ busStops, source, destination }) => {
           </Marker>
         )}
 
-        {busStops.map((stop, index) => (
+        {busStops?.map((stop, index) => (
           <Marker
             key={index}
             position={stop.coordinates}
@@ -125,29 +129,35 @@ const MapContainer = ({ busStops, source, destination }) => {
       </LeafletMap>
 
       {googleMapsUrl && (
-        <a
-          href={googleMapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
+        <Box
+          sx={{
             position: "absolute",
-            bottom: 10,
-            right: 10,
-            textDecoration: "none",
+            bottom: 16,
+            right: 16,
+            zIndex: 1000,
           }}
         >
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#1976d2",
-              color: "white",
-              zIndex: 1000,
-              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
-            }}
+          <a
+            href={googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "none" }}
           >
-            Open on Google Maps
-          </Button>
-        </a>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#1976d2",
+                color: "white",
+                boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)",
+                "&:hover": {
+                  backgroundColor: "#1565c0",
+                },
+              }}
+            >
+              Open in Google Maps
+            </Button>
+          </a>
+        </Box>
       )}
     </Box>
   );

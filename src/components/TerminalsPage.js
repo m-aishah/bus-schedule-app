@@ -54,9 +54,22 @@ export default function TerminalsPage({ terminals }) {
     >
       <Container maxWidth="lg">
         <Box sx={{ mb: 6 }}>
-          <GradientText variant="h4" sx={{ mb: 2 }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+              background: "linear-gradient(270deg, #FF4081, #1976D2)",
+              backgroundSize: "400% 400%",
+              animation: "gradientShift 8s ease infinite",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              color: "transparent",
+              mb: 1,
+              textAlign: "center",
+            }}
+          >
             Bus Terminals
-          </GradientText>
+          </Typography>
           <Typography
             variant="body1"
             sx={{
