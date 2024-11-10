@@ -11,6 +11,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import PhoneIcon from "@mui/icons-material/Phone";
 import BusAlertIcon from "@mui/icons-material/BusAlert";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { styled } from "@mui/material/styles";
 
 // Group the bus companies by the destination
 const groupByDestination = (busCompanies) => {
@@ -24,6 +25,22 @@ const groupByDestination = (busCompanies) => {
   }, {});
 };
 
+const col = "rgb(93,137,216)";
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  borderRadius: "50px",
+  textTransform: "none",
+  padding: "8px 24px",
+  transition: "all 0.3s ease",
+  color: "black",
+  background: "transparent",
+  border: "2px solid",
+  borderColor: col,
+  "&:hover": {
+    transform: "translateY(-1px)",
+    boxShadow: "0 4px 12px rgba(33, 150, 243, 0.2)",
+  },
+}));
 export default function BusList({ busCompanies, handleViewSchedules }) {
   // Sort the companies by destination and group them
   const groupedBusCompanies = groupByDestination(busCompanies);
@@ -47,7 +64,7 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
             }}
           >
             <PlaceIcon
-              sx={{ color: "#1E88E5", marginRight: 1, fontSize: "1.5rem" }}
+              sx={{ color: col, marginRight: 1, fontSize: "1.5rem" }}
             />
             {/* Wrapping in separate boxes for better alignment */}
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -71,7 +88,7 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                 sx={{
                   marginX: 0.5, // Reduced margin
                   fontSize: "1.25rem", // Smaller arrow size for better alignment
-                  color: "#1E88E5",
+                  color: col,
                 }}
               />
               <Typography
@@ -118,14 +135,12 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                         variant="h5"
                         sx={{
                           fontWeight: "700",
-                          color: "rgb(93,137,216)", // Updated to modern blue
+                          color: "black", // Updated to modern blue
                         }}
                       >
                         {company.name[0].toUpperCase() + company.name.slice(1)}
                       </Typography>
-                      <BusAlertIcon
-                        sx={{ fontSize: "2rem", color: "#1E88E5" }}
-                      />
+                      <BusAlertIcon sx={{ fontSize: "2rem", color: col }} />
                     </Box>
 
                     {/* Contact details */}
@@ -136,36 +151,21 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                         marginBottom: 1,
                       }}
                     >
-                      <PhoneIcon sx={{ marginRight: 1, color: "#1E88E5" }} />
+                      <PhoneIcon sx={{ marginRight: 1, color: col }} />
                       <Typography variant="body1" sx={{ color: "#333" }}>
                         {company.phone}
                       </Typography>
                     </Box>
 
                     {/* CTA Button */}
-                    <Button
-                      variant="contained"
-                      color="primary"
+                    <StyledButton
                       onClick={(e) => {
                         e.stopPropagation();
                         handleViewSchedules(company);
                       }}
-                      sx={{
-                        width: "auto",
-                        justifyContent: "center",
-                        borderRadius: "50px",
-                        display: "flex",
-                        fontWeight: "600",
-                        flexDirection: "row",
-                        backgroundColor: "rgb(93,137,216)",
-                        textTransform: "none",
-                        "&:hover": {
-                          backgroundColor: "#1565C0",
-                        },
-                      }}
                     >
                       View Schedules
-                    </Button>
+                    </StyledButton>
                   </CardContent>
                 </Card>
               </Grid>
