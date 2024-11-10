@@ -11,16 +11,10 @@ import {
   Fade,
   Stack,
   Paper,
-  Divider,
 } from "@mui/material";
 import { TabContext, TabList } from "@mui/lab";
-import {
-  X as CloseIcon,
-  Clock as ClockIcon,
-  MapPin as LocationIcon,
-  Bus as BusIcon,
-} from "lucide-react";
-import { BusSchedule, BusStops } from "./BusScheduleComponents";
+import { X as CloseIcon, Bus as BusIcon } from "lucide-react";
+import { BusStops, BusSchedule } from "./BusModalComponents";
 
 const BusModal = ({ open, onClose, scheduleData }) => {
   const theme = useTheme();
@@ -45,78 +39,70 @@ const BusModal = ({ open, onClose, scheduleData }) => {
       PaperProps={{
         sx: {
           borderRadius: isMobile ? 0 : 3,
-          background: `linear-gradient(145deg, ${theme.palette.background.paper}, ${theme.palette.background.default})`,
+          background: theme.palette.background.paper,
           overflow: "hidden",
         },
       }}
     >
-      {/* Header */}
       <Box
         sx={{
           p: 2,
           borderBottom: `1px solid ${theme.palette.divider}`,
-          background: theme.palette.background.paper,
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
         }}
       >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
+        <Paper
+          elevation={0}
+          sx={{
+            p: 1,
+            bgcolor: theme.palette.primary.soft,
+            borderRadius: 1,
+          }}
         >
+          <BusIcon size={24} color={theme.palette.primary.main} />
+        </Paper>
+
+        <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
           <Typography variant="h6" fontWeight="bold">
             {scheduleData.service}
           </Typography>
-          <IconButton
-            onClick={onClose}
-            sx={{
-              color: "text.secondary",
-              "&:hover": {
-                background: theme.palette.action.hover,
-              },
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
+          <Typography variant="body2" color="primary">
+            Bus Service
+          </Typography>
         </Stack>
+
+        <IconButton
+          onClick={onClose}
+          sx={{
+            color: "text.secondary",
+            "&:hover": { bgcolor: theme.palette.action.hover },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
       </Box>
 
-      {/* Tabs */}
       <TabContext value={activeTab}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList
             onChange={handleTabChange}
-            centered
+            variant="fullWidth"
             sx={{
               "& .MuiTab-root": {
-                minHeight: 64,
+                minHeight: 56,
                 textTransform: "none",
                 fontSize: "1rem",
                 fontWeight: 500,
               },
             }}
           >
-            <Tab
-              label={
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <BusIcon size={18} />
-                  <span>Schedule</span>
-                </Stack>
-              }
-              value="schedule"
-            />
-            <Tab
-              label={
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <LocationIcon size={18} />
-                  <span>Stops</span>
-                </Stack>
-              }
-              value="stops"
-            />
+            <Tab label="Schedule" value="schedule" />
+            <Tab label="Stops" value="stops" />
           </TabList>
         </Box>
 
-        {/* Content */}
         <DialogContent>
           <Fade in={activeTab === "schedule"} unmountOnExit>
             <Box sx={{ display: activeTab === "schedule" ? "block" : "none" }}>
