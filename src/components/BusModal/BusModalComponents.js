@@ -246,10 +246,18 @@ export const BusSchedule = ({ scheduleData }) => {
             }}
           >
             <Stack direction="row" spacing={1} alignItems="center">
-              <InfoIcon size={16} color={theme.palette.text.secondary} />
-              <Typography variant="body2" color="text.secondary">
-                Estimated travel time: 45 minutes
-              </Typography>
+              <Alert
+                severity="info"
+                icon={<AlertCircle size={16} />}
+                sx={{
+                  m: 2,
+                  bgcolor: theme.palette.grey[50],
+                }}
+              >
+                <Typography variant="body2">
+                  Estimated travel time: 45 minutes
+                </Typography>
+              </Alert>
             </Stack>
           </Paper>
         </Stack>
@@ -387,7 +395,7 @@ export const BusStops = ({ scheduleData }) => {
           </Box>
         ) : (
           <Box sx={{ p: 1 }}>
-            <Box sx={{ height: 400, mb: 2 }}>
+            <Box sx={{ height: 400, width: "100%", mb: 2 }}>
               <MapContainer
                 busStops={busStops}
                 source={source}
