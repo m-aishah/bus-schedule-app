@@ -386,7 +386,7 @@ export const BusStops = ({ scheduleData }) => {
             </Alert>
           </Box>
         ) : (
-          <Box sx={{ p: 2 }}>
+          <Box sx={{ p: 1 }}>
             <Box sx={{ height: 400, mb: 2 }}>
               <MapContainer
                 busStops={busStops}
