@@ -4,6 +4,11 @@ import Footer from "@/components/Footer";
 import ThemeRegistry from "@/components/ThemeRegistry";
 import "./global.css";
 
+export const metadata = {
+  title: "Bus Tracker Cyprus",
+  description: "Accesible bus tracking & bus schedule information for TRNC",
+};
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
