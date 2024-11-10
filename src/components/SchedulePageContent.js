@@ -2,7 +2,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
   ThemeProvider,
-  createTheme,
+  Tabs,
+  Tab,
   Typography,
   Box,
   Stack,
@@ -79,6 +80,7 @@ export default function SchedulePage() {
     "20:00",
   ];
 
+  const [activeTab, setActiveTab] = useState("all");
   const [source, setSource] = useState("");
   const [destination, setDestination] = useState(locations[0]);
   const [departureTime, setDepartureTime] = useState("");
@@ -247,11 +249,12 @@ export default function SchedulePage() {
     <ThemeProvider theme={theme}>
       <Container maxWidth="lg" sx={{ py: 4, mt: 8 }}>
         <Paper
-          elevation={3}
+          elevation={0}
           sx={{
             p: { xs: 2, sm: 4 },
-            borderRadius: 4,
-            boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+            borderRadius: 2,
+            bgcolor: "background.paper",
+            boxShadow: "0px 4px 20px rgba(0,0,0,0.05)",
           }}
         >
           <Stack spacing={4}>
@@ -276,99 +279,145 @@ export default function SchedulePage() {
                 Plan your journey across Northern Cyprus
               </Typography>
             </Box>
-
-            {/* Search Controls */}
-            <Stack
-              direction="column"
-              spacing={3}
+            {/* Search Controls - More compact and modern */}
+            <Paper
+              elevation={0}
               sx={{
-                padding: 2,
-                width: "100%",
-                margin: "0 auto",
+                p: 3,
+                borderRadius: 2,
+                bgcolor: "grey.50",
               }}
             >
-              {/* From & To Section */}
-              <Stack direction="row" spacing={2} alignItems="center">
-                <SelectWrapper
-                  label="From"
-                  value={source}
-                  onChange={handleSourceChange}
-                  options={locations}
-                  icon={<LocationOn fontSize="small" color="primary" />}
-                  helperText="Select your starting location"
-                />
-
-                <IconButton
-                  onClick={swapLocations}
-                  sx={{
-                    bgcolor: "background.paper",
-                    "&:hover": { bgcolor: "action.hover" },
-                    border: "1px solid", // Adding a border for better contrast
-                    borderColor: "divider", // Use theme color
-                  }}
-                  aria-label="Swap locations"
+              <Stack spacing={3}>
+                {/* From & To Section */}
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2}
+                  alignItems="center"
                 >
-                  <SwapVert fontSize="small" />
-                </IconButton>
+                  <SelectWrapper
+                    label="From"
+                    value={source}
+                    onChange={handleSourceChange}
+                    options={locations}
+                    icon={<LocationOn fontSize="small" color="primary" />}
+                    fullWidth
+                  />
 
-                <SelectWrapper
-                  label="To"
-                  value={destination}
-                  onChange={handleDestinationChange}
-                  options={allowedRoutes[source] || []}
-                  icon={<LocationOn fontSize="small" color="secondary" />}
-                  helperText="Select your destination"
-                />
-              </Stack>
+                  <IconButton
+                    onClick={swapLocations}
+                    sx={{
+                      p: 1,
+                      bgcolor: "background.paper",
+                      boxShadow: 1,
+                      "&:hover": {
+                        bgcolor: "grey.100",
+                      },
+                    }}
+                  >
+                    <SwapVert fontSize="small" />
+                  </IconButton>
 
-              {/* Departure Time Section */}
-              <Stack direction="row" spacing={2} alignItems="center">
+                  <SelectWrapper
+                    label="To"
+                    value={destination}
+                    onChange={handleDestinationChange}
+                    options={allowedRoutes[source] || []}
+                    icon={<LocationOn fontSize="small" color="secondary" />}
+                    fullWidth
+                  />
+                </Stack>
+
+                {/* Departure Time Section */}
                 <SelectWrapper
-                  label="Departure"
+                  label="Departure Time"
                   value={departureTime}
                   onChange={handleDepartureTimeChange}
                   options={times}
                   icon={<Schedule fontSize="small" color="primary" />}
-                  helperText="Select your departure time"
+                  fullWidth
                 />
               </Stack>
-            </Stack>
-
+            </Paper>
+            {/* Tabs Section */}
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={activeTab}
+                onChange={(e, newValue) => setActiveTab(newValue)}
+                variant="scrollable"
+                scrollButtons="auto"
+                allowScrollButtonsMobile
+                sx={{
+                  "& .MuiTab-root": {
+                    textTransform: "none",
+                    fontWeight: 500,
+                    fontSize: "1rem",
+                    minWidth: 100,
+                  },
+                }}
+              >
+                <Tab label="All Services" value="all" />
+                {busServices.map((service) => (
+                  <Tab
+                    key={service}
+                    label={service}
+                    value={service.toLowerCase()}
+                    // icon={
+                    //   <DirectionsBusIcon
+                    //     sx={{ color: busServiceColors[service] }}
+                    //   />
+                    // }
+                    // iconPosition="start"
+                  />
+                ))}
+              </Tabs>
+            </Box>
+            {/* Results Section - Improved card layout */}
             {/* Results Section */}
             {loading ? (
               <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
                 <CircularProgress size={40} thickness={4} />
               </Box>
             ) : (
-              <Stack spacing={4}>
-                {busServices.map((service) => (
-                  <Paper
-                    key={service}
-                    elevation={1}
-                    sx={{
-                      p: 3,
-                      borderRadius: 2,
-                      background: theme.palette.background.default,
-                      borderLeft: `6px solid ${busServiceColors[service]}`,
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        mb: 3,
-                        fontWeight: 600,
-                        color: busServiceColors[service],
-                      }}
-                    >
-                      {service}
-                    </Typography>
+              <Box sx={{ mt: 3 }}>
+                {activeTab === "all" ? (
+                  <Stack spacing={4}>
+                    {busServices.map((service) => {
+                      const scheduleData = setUpScheduleDataByService(
+                        schedules,
+                        service
+                      );
+                      if (scheduleData.times.length === 0) return null;
+
+                      return (
+                        <Box key={service}>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              mb: 2,
+                              fontWeight: 600,
+                              color: busServiceColors[service],
+                            }}
+                          >
+                            {service}
+                          </Typography>
+                          <CardSlider
+                            cards={renderBusCards(service)}
+                            isMobile={isMobile}
+                          />
+                        </Box>
+                      );
+                    })}
+                  </Stack>
+                ) : (
+                  <Box sx={{ mt: 2 }}>
                     <CardSlider
-                      cards={renderBusCards(service)}
+                      cards={renderBusCards(activeTab.toUpperCase())}
                       isMobile={isMobile}
                     />
-                  </Paper>
-                ))}
-              </Stack>
+                  </Box>
+                )}
+              </Box>
             )}
           </Stack>
         </Paper>
