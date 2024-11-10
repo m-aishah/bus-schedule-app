@@ -262,7 +262,7 @@ export const BusStops = ({ scheduleData }) => {
   const theme = useTheme();
   const [view, setView] = useState("list"); // 'list' or 'map'
   const { price, busStops, source, destination } = scheduleData;
-  // TODO: Add bus stops to the database and use it here
+
   return (
     <Box sx={{ p: 2 }}>
       <RouteHeader

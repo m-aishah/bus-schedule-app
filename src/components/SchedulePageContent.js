@@ -17,7 +17,7 @@ import {
 import { SwapVert, Schedule, LocationOn } from "@mui/icons-material";
 import BusCard from "@/components/BusCard";
 import BusModal from "@/components/BusModal";
-import fetchSchedules from "@/actions/databaseActions";
+import { fetchSchedules, fetchBusStops } from "@/actions/databaseActions";
 import SelectWrapper from "@/components/SelectWrapper";
 import CardSlider from "@/components/CardSlider";
 
@@ -26,11 +26,11 @@ const locationCoordinates = {
   Guzelyurt: { lat: 35.2021, lon: 33.0183 },
   Girne: { lat: 35.3364, lon: 33.3182 },
   Nicosia: { lat: 35.1856, lon: 33.3823 },
-  Yedidalga: { lat: 35.1754, lon: 32.8129 },
+  // Yedidalga: { lat: 35.1754, lon: 32.8129 },
 };
 
 const allowedRoutes = {
-  Lefke: ["Guzelyurt", "Yedidalga"],
+  Lefke: ["Guzelyurt"],
   Guzelyurt: ["Lefke", "Nicosia", "Girne"],
   Nicosia: ["Guzelyurt", "Girne"],
   Girne: ["Guzelyurt", "Nicosia"],
@@ -57,8 +57,10 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 const busServiceColors = {
   AKVA: "#1E88E5", // Blue
   CIMEN: "#43A047", // Green
-  EUL_BUS: "#FFA000", // Amber
+  "EUL BUS": "#FFA000", // Amber
 };
+
+const formatServiceName = (name) => name.replace(/_/g, " ");
 
 export default function SchedulePage() {
   const theme = useTheme();
@@ -119,11 +121,12 @@ export default function SchedulePage() {
       minute: "2-digit",
       hour12: false,
     });
-    setDepartureTime(formattedTime);
+
+    setDepartureTime(times.includes(formattedTime) ? formattedTime : "09:00");
 
     setSource(locations[0]);
     setDestination(allowedRoutes[locations[0]][0]);
-  }, []);
+  }, [times]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && "geolocation" in navigator) {
@@ -149,14 +152,16 @@ export default function SchedulePage() {
 
   const setUpScheduleDataByService = useCallback(
     (schedules, busService) => {
-      const schedule = schedules[busService.toLowerCase()];
+      const dbServiceName = busService.toLowerCase().replace(/ /g, "_");
+      const schedule = schedules[dbServiceName];
       if (schedule && schedule.length > 0) {
         const allTimes = schedule[0].main_route[dayCategory] || [];
         const filteredTimes = filterTimes(allTimes, departureTime);
+        const busStops = schedule[0].bus_stops || [];
         return {
           price: schedule[0].main_route.price,
           times: filteredTimes,
-          busStops: schedule[0].bus_stops || [],
+          busStops: busStops,
         };
       }
       return { price: "N/A", times: [], busStops: [] };
@@ -173,9 +178,10 @@ export default function SchedulePage() {
         source.toLowerCase(),
         destination.toLowerCase()
       );
-      setSchedules(fetchedSchedules);
+      setSchedules(fetchedSchedules || {});
     } catch (error) {
       console.error("Error fetching schedules:", error);
+      setSchedules({});
     } finally {
       setLoading(false);
     }
@@ -194,13 +200,12 @@ export default function SchedulePage() {
   const handleDestinationChange = (event) => setDestination(event.target.value);
   const handleDepartureTimeChange = (event) =>
     setDepartureTime(event.target.value);
-  // const handleArrivalTimeChange = (event) => setArrivalTime(event.target.value);
 
   const handleCardClick = (busService, time) => {
     const scheduleData = setUpScheduleDataByService(schedules, busService);
     setSelectedSchedule({
       ...scheduleData,
-      service: busService,
+      service: formatServiceName(busService),
       selectedTime: time,
       source,
       destination,
@@ -224,12 +229,12 @@ export default function SchedulePage() {
         }}
       >
         <BusCard
-          service={busService}
+          service={formatServiceName(busService)}
           time={time}
           location={source}
           price={`${scheduleData.price}TL`}
           onClick={() => handleCardClick(busService, time)}
-          color={busServiceColors[busService]}
+          color={busServiceColors[formatServiceName(busService)]}
         />
       </Box>
     ));
@@ -265,8 +270,8 @@ export default function SchedulePage() {
                 sx={{
                   fontWeight: 700,
                   background: "linear-gradient(270deg, #FF4081, #1976D2)",
-                  backgroundSize: "400% 400%", // Allow room for animation
-                  animation: "gradientShift 8s ease infinite", // CSS animation
+                  backgroundSize: "400% 400%",
+                  animation: "gradientShift 8s ease infinite",
                   backgroundClip: "text",
                   WebkitBackgroundClip: "text",
                   color: "transparent",
@@ -279,7 +284,7 @@ export default function SchedulePage() {
                 Plan your journey across Northern Cyprus
               </Typography>
             </Box>
-            {/* Search Controls - More compact and modern */}
+            {/* Search Controls */}
             <Paper
               elevation={0}
               sx={{
@@ -311,7 +316,7 @@ export default function SchedulePage() {
                       bgcolor: "background.paper",
                       boxShadow: 1,
                       "&:hover": {
-                        bgcolor: "grey.100",
+                        bgcolor: theme.palette.action.hover,
                       },
                     }}
                   >
@@ -360,19 +365,12 @@ export default function SchedulePage() {
                 {busServices.map((service) => (
                   <Tab
                     key={service}
-                    label={service}
+                    label={formatServiceName(service)}
                     value={service.toLowerCase()}
-                    // icon={
-                    //   <DirectionsBusIcon
-                    //     sx={{ color: busServiceColors[service] }}
-                    //   />
-                    // }
-                    // iconPosition="start"
                   />
                 ))}
               </Tabs>
             </Box>
-            {/* Results Section - Improved card layout */}
             {/* Results Section */}
             {loading ? (
               <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
@@ -396,10 +394,11 @@ export default function SchedulePage() {
                             sx={{
                               mb: 2,
                               fontWeight: 600,
-                              color: busServiceColors[service],
+                              color:
+                                busServiceColors[formatServiceName(service)],
                             }}
                           >
-                            {service}
+                            {formatServiceName(service)}
                           </Typography>
                           <CardSlider
                             cards={renderBusCards(service)}

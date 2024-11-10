@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useState, useCallback } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 
-// Dynamic import of the actual page component
 const SchedulePageContent = dynamic(
   () => import("@/components/SchedulePageContent"),
   {

@@ -74,4 +74,16 @@ const fetchSchedules = async (dayCategory, startTime, source, destination) => {
   }
 };
 
-export default fetchSchedules;
+const fetchBusStops = async (busStopId) => {
+  try {
+    const busStopsRef = collection(db, "stops");
+    const q = query(busStopsRef, where("id", "==", busStopId));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) => doc.data());
+  } catch (error) {
+    console.error("Error fetching bus stops: ", error);
+    return [];
+  }
+};
+
+export { fetchRouteIds, fetchSchedules, fetchBusStops };
