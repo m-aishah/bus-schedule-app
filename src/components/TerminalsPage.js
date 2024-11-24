@@ -128,7 +128,7 @@ export default function TerminalsPage({ terminals }) {
                   </Typography>
                   <StyledButton
                     component={Link}
-                    href={`/oneterminal/${terminal.id}`}
+                    href={`/terminal/${terminal.id}`}
                   >
                     View Details
                   </StyledButton>

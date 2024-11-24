@@ -148,7 +148,7 @@ export default function OneTerminal({ busCompanies, id }) {
                 {displayTimes(
                   selectedDay === "Saturday" || selectedDay === "Sunday"
                     ? selectedBus.schedules.times.weekend
-                    : selectedBus.schedules.times.weekdays,
+                    : selectedBus.schedules.times.weekdays
                 )}
 
                 {/* Display Price */}

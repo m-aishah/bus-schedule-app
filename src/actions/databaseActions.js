@@ -26,7 +26,7 @@ const fetchSchedules = async (dayCategory, startTime, source, destination) => {
   };
 
   if (!startTime || !/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(startTime)) {
-    console.warn("Invalid or empty startTime:", startTime);
+    // console.warn("Invalid or empty startTime:", startTime);
     return {};
   }
 
