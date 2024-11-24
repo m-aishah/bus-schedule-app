@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { TextField, InputAdornment, Box, Chip, Stack } from "@mui/material";
 import { Schedule } from "@mui/icons-material";
 
@@ -6,6 +6,7 @@ const TimeInput = ({ value, onChange }) => {
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState("");
   const [isCustom, setIsCustom] = useState(false);
+  const inputRef = useRef(null);
 
   const getCurrentRoundedTime = () => {
     const now = new Date();
@@ -47,20 +48,14 @@ const TimeInput = ({ value, onChange }) => {
       label: "Evening",
       value: "19:00",
     },
-    {
-      label: "Custom",
-      value: "custom",
-    },
   ];
 
-  // Set default to "Now" on component mount
   useEffect(() => {
     const nowTime = getCurrentRoundedTime();
     setInputValue(nowTime);
     onChange(nowTime);
   }, []);
 
-  // Handle external value changes
   useEffect(() => {
     if (value) {
       setInputValue(value);
@@ -99,20 +94,23 @@ const TimeInput = ({ value, onChange }) => {
   };
 
   const handleQuickOptionClick = (option) => {
-    if (option.value === "custom") {
-      setIsCustom(true);
-      return;
-    }
-
     setIsCustom(false);
     setInputValue(option.value);
     setError("");
     onChange(option.value);
   };
 
+  const handleCustomClick = () => {
+    setIsCustom(true);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
       <TextField
+        inputRef={inputRef}
         fullWidth
         placeholder="Enter time (HH:MM)"
         label="Show buses after"
@@ -152,8 +150,7 @@ const TimeInput = ({ value, onChange }) => {
         }}
       >
         {quickTimeOptions.map((option) => {
-          const isSelected =
-            option.value === "custom" ? isCustom : inputValue === option.value;
+          const isSelected = !isCustom && inputValue === option.value;
 
           return (
             <Chip
@@ -173,6 +170,20 @@ const TimeInput = ({ value, onChange }) => {
             />
           );
         })}
+        <Chip
+          label="Custom"
+          onClick={handleCustomClick}
+          color={isCustom ? "primary" : "default"}
+          variant={isCustom ? "filled" : "outlined"}
+          sx={{
+            borderRadius: "16px",
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              transform: "translateY(-1px)",
+              boxShadow: 1,
+            },
+          }}
+        />
       </Stack>
     </Box>
   );
