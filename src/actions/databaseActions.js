@@ -20,19 +20,27 @@ const fetchRouteIds = async (source, destination) => {
 const busServices = ["akva", "cimen", "eul_bus"];
 
 const fetchSchedules = async (dayCategory, startTime, source, destination) => {
-  console.log("Fetching schedules:", {
-    dayCategory,
-    startTime,
-    source,
-    destination,
-  });
+  const convertTimeToMinutes = (timeString) => {
+    const [hours, minutes] = timeString.split(":");
+    return parseInt(hours) * 60 + parseInt(minutes);
+  };
+
+  if (!startTime || !/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(startTime)) {
+    // console.warn("Invalid or empty startTime:", startTime);
+    return {};
+  }
+
+  const startTimeMinutes = convertTimeToMinutes(startTime);
+
   try {
     const schedules = {};
     const routeIds = await fetchRouteIds(source, destination);
+
     if (routeIds.length === 0) {
-      console.log("No routes found for the given source and destination");
+      // console.log("No routes found for the given source and destination");
       return schedules;
     }
+
     const schedulesRef = collection(db, "schedules");
 
     for (const busService of busServices) {
@@ -48,7 +56,11 @@ const fetchSchedules = async (dayCategory, startTime, source, destination) => {
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         const times = data.main_route[dayCategory] || [];
-        const filteredTimes = times.filter((time) => time >= startTime);
+
+        const filteredTimes = times.filter((time) => {
+          const timeMinutes = convertTimeToMinutes(time);
+          return timeMinutes >= startTimeMinutes;
+        });
 
         if (filteredTimes.length > 0) {
           serviceSchedules.push({
@@ -65,12 +77,10 @@ const fetchSchedules = async (dayCategory, startTime, source, destination) => {
         schedules[busService] = serviceSchedules;
       }
     }
-
-    console.log("Fetched schedules:", schedules);
     return schedules;
   } catch (error) {
     console.error("Error fetching schedules:", error);
-    return {};
+    return {}; // Return empty object on error
   }
 };
 

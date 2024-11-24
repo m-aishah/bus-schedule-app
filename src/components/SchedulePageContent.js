@@ -14,26 +14,27 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { SwapVert, Schedule, LocationOn } from "@mui/icons-material";
+import { SwapVert, LocationOn } from "@mui/icons-material";
 import BusCard from "@/components/BusCard";
 import BusModal from "@/components/BusModal";
 import { fetchSchedules, fetchBusStops } from "@/actions/databaseActions";
 import SelectWrapper from "@/components/SelectWrapper";
 import CardSlider from "@/components/CardSlider";
+import TimeInput from "@/components/TimeInput";
 
 const locationCoordinates = {
   Lefke: { lat: 35.1175, lon: 32.8464 },
   Guzelyurt: { lat: 35.2021, lon: 33.0183 },
   Girne: { lat: 35.3364, lon: 33.3182 },
-  Nicosia: { lat: 35.1856, lon: 33.3823 },
+  Lefkosa: { lat: 35.1856, lon: 33.3823 },
   // Yedidalga: { lat: 35.1754, lon: 32.8129 },
 };
 
 const allowedRoutes = {
   Lefke: ["Guzelyurt"],
-  Guzelyurt: ["Lefke", "Nicosia", "Girne"],
-  Nicosia: ["Guzelyurt", "Girne"],
-  Girne: ["Guzelyurt", "Nicosia"],
+  Guzelyurt: ["Lefke", "Lefkosa", "Girne"],
+  Lefkosa: ["Guzelyurt", "Girne"],
+  Girne: ["Guzelyurt", "Lefkosa"],
   Yedidalga: ["Lefke"],
 };
 
@@ -67,20 +68,6 @@ export default function SchedulePage() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const busServices = ["AKVA", "CIMEN", "EUL_BUS"];
-  const times = [
-    "09:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-    "18:00",
-    "19:00",
-    "20:00",
-  ];
 
   const [activeTab, setActiveTab] = useState("all");
   const [source, setSource] = useState("");
@@ -113,16 +100,14 @@ export default function SchedulePage() {
     setDayCategory(today === 0 || today === 6 ? "weekend" : "weekdays");
 
     const currentTime = new Date();
-    const nextHour = new Date(
-      currentTime.setHours(currentTime.getHours() + 1, 0, 0, 0)
-    );
-    const formattedTime = nextHour.toLocaleTimeString("en-US", {
+    currentTime.setMinutes(Math.ceil(currentTime.getMinutes() / 5) * 5);
+    const formattedTime = currentTime.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
     });
 
-    setDepartureTime(times.includes(formattedTime) ? formattedTime : "09:00");
+    setDepartureTime(formattedTime);
 
     setSource(locations[0]);
     setDestination(allowedRoutes[locations[0]][0]);
@@ -197,8 +182,7 @@ export default function SchedulePage() {
   };
 
   const handleDestinationChange = (event) => setDestination(event.target.value);
-  const handleDepartureTimeChange = (event) =>
-    setDepartureTime(event.target.value);
+  const handleDepartureTimeChange = (newTime) => setDepartureTime(newTime);
 
   const handleCardClick = (busService, time) => {
     const scheduleData = setUpScheduleDataByService(schedules, busService);
@@ -333,13 +317,17 @@ export default function SchedulePage() {
                 </Stack>
 
                 {/* Departure Time Section */}
-                <SelectWrapper
+                {/* <SelectWrapper
                   label="Departure Time"
                   value={departureTime}
                   onChange={handleDepartureTimeChange}
                   options={times}
                   icon={<Schedule fontSize="small" color="primary" />}
                   fullWidth
+                /> */}
+                <TimeInput
+                  value={departureTime}
+                  onChange={handleDepartureTimeChange}
                 />
               </Stack>
             </Paper>

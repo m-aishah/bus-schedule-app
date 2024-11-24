@@ -16,7 +16,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Link from "next/link";
-import { Menu, Bus, Home, Calendar, Mail, UserCog, X } from "lucide-react";
+import { Menu, Bus, Home, Calendar, Mail, X } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: "white",
@@ -58,12 +59,12 @@ const menuItems = [
   { text: "Home", icon: <Home size={18} />, path: "/" },
   { text: "Schedule", icon: <Calendar size={18} />, path: "/schedule" },
   { text: "Contact", icon: <Mail size={18} />, path: "/contact" },
-  // { text: "Admin", icon: <UserCog size={18} />, path: "/admin" },
 ];
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState("/");
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -121,7 +122,7 @@ const Navbar = () => {
                 padding: "12px 16px",
                 transition: "all 0.3s ease",
                 backgroundColor:
-                  activeItem === item.path
+                  pathname === item.path
                     ? "rgba(33, 150, 243, 0.04)"
                     : "transparent",
                 "&:hover": {
@@ -129,23 +130,20 @@ const Navbar = () => {
                   transform: "translateX(4px)",
                 },
               }}
-              onClick={() => {
-                setActiveItem(item.path);
-                handleDrawerToggle();
-              }}
+              onClick={handleDrawerToggle}
             >
-              {activeItem === item.path && <ActiveIndicator />}
+              {pathname === item.path && <ActiveIndicator />}
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   gap: 2,
-                  ml: activeItem === item.path ? 1 : 0,
+                  ml: pathname === item.path ? 1 : 0,
                 }}
               >
                 <Box
                   sx={{
-                    color: activeItem === item.path ? "#2196f3" : "black",
+                    color: pathname === item.path ? "#2196f3" : "black",
                     transition: "color 0.3s ease",
                   }}
                 >
@@ -155,8 +153,8 @@ const Navbar = () => {
                   primary={item.text}
                   primaryTypographyProps={{
                     sx: {
-                      fontWeight: activeItem === item.path ? 600 : 500,
-                      color: activeItem === item.path ? "#2196f3" : "black",
+                      fontWeight: pathname === item.path ? 600 : 500,
+                      color: pathname === item.path ? "#2196f3" : "black",
                     },
                   }}
                 />
@@ -194,14 +192,9 @@ const Navbar = () => {
                 gap: 1,
                 flexGrow: { xs: 1, md: 0 },
               }}
+              onClick={() => router.push("/")}
             >
-              <Bus
-                size={24}
-                color="#2196f3"
-                style={{
-                  transition: "transform 0.3s ease",
-                }}
-              />
+              <Bus size={24} color="#2196f3" />
               <Typography
                 variant="h6"
                 sx={{
@@ -231,15 +224,11 @@ const Navbar = () => {
                   startIcon={item.icon}
                   sx={{
                     backgroundColor:
-                      activeItem === item.path
+                      pathname === item.path
                         ? "rgba(33, 150, 243, 0.08)"
                         : "transparent",
-                    fontWeight: activeItem === item.path ? 600 : 500,
-                    "&:hover": {
-                      backgroundColor: "rgba(33, 150, 243, 0.12)",
-                    },
+                    fontWeight: pathname === item.path ? 600 : 500,
                   }}
-                  onClick={() => setActiveItem(item.path)}
                 >
                   {item.text}
                 </StyledButton>

@@ -214,7 +214,7 @@ export const BusSchedule = ({ scheduleData }) => {
                       </Typography>
                       {isSelected && (
                         <Chip
-                          label="Next departure"
+                          label="Selected departure"
                           size="small"
                           sx={{
                             height: 24,
