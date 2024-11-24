@@ -1,23 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  TextField,
-  InputAdornment,
-  Box,
-  Stack,
-  Chip,
-  IconButton,
-  Collapse,
-} from "@mui/material";
-import { Schedule, ChevronRight } from "@mui/icons-material";
+import { TextField, InputAdornment, Box, Chip, Stack } from "@mui/material";
+import { Schedule } from "@mui/icons-material";
 
 const TimeInput = ({ value, onChange }) => {
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState("");
-  const [showQuickPicks, setShowQuickPicks] = useState(false);
-
-  useEffect(() => {
-    setInputValue(value);
-  }, [value]);
+  const [isCustom, setIsCustom] = useState(false);
 
   const getCurrentRoundedTime = () => {
     const now = new Date();
@@ -55,7 +43,30 @@ const TimeInput = ({ value, onChange }) => {
       label: "Afternoon",
       value: "14:00",
     },
+    {
+      label: "Evening",
+      value: "19:00",
+    },
+    {
+      label: "Custom",
+      value: "custom",
+    },
   ];
+
+  // Set default to "Now" on component mount
+  useEffect(() => {
+    const nowTime = getCurrentRoundedTime();
+    setInputValue(nowTime);
+    onChange(nowTime);
+  }, []);
+
+  // Handle external value changes
+  useEffect(() => {
+    if (value) {
+      setInputValue(value);
+      setIsCustom(!quickTimeOptions.some((option) => option.value === value));
+    }
+  }, [value]);
 
   const validateTime = (time) => {
     if (!time) return false;
@@ -66,6 +77,7 @@ const TimeInput = ({ value, onChange }) => {
   const handleTimeChange = (event) => {
     const newTime = event.target.value;
     setInputValue(newTime);
+    setIsCustom(true);
 
     if (newTime === "") {
       setError("Please enter a time");
@@ -86,117 +98,82 @@ const TimeInput = ({ value, onChange }) => {
     onChange(newTime);
   };
 
-  const handleQuickOptionClick = (timeValue) => {
-    setInputValue(timeValue);
+  const handleQuickOptionClick = (option) => {
+    if (option.value === "custom") {
+      setIsCustom(true);
+      return;
+    }
+
+    setIsCustom(false);
+    setInputValue(option.value);
     setError("");
-    onChange(timeValue);
+    onChange(option.value);
   };
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Box
+      <TextField
+        fullWidth
+        placeholder="Enter time (HH:MM)"
+        label="Show buses after"
+        value={inputValue}
+        onChange={handleTimeChange}
+        error={!!error}
+        size="medium"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Schedule fontSize="small" color={error ? "error" : "primary"} />
+            </InputAdornment>
+          ),
+          sx: {
+            bgcolor: "background.paper",
+            "&:hover": {
+              bgcolor: "background.paper",
+            },
+            height: 45,
+            borderRadius: 2,
+          },
+        }}
+        helperText={error}
         sx={{
-          position: "relative",
-          mb: error ? 3 : 1,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+          mb: 2,
+        }}
+      />
+
+      <Stack
+        direction="row"
+        sx={{
+          flexWrap: "wrap",
+          gap: 1,
         }}
       >
-        <TextField
-          fullWidth
-          placeholder="Select departure time"
-          value={inputValue}
-          label="Show buses after"
-          onChange={handleTimeChange}
-          error={!!error}
-          size="medium"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Schedule
-                  fontSize="small"
-                  color={error ? "error" : "primary"}
-                />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  edge="end"
-                  onClick={() => setShowQuickPicks(!showQuickPicks)}
-                  sx={{
-                    transform: showQuickPicks ? "rotate(90deg)" : "none",
-                    transition: "transform 0.3s ease",
-                  }}
-                >
-                  <ChevronRight />
-                </IconButton>
-              </InputAdornment>
-            ),
-            sx: {
-              bgcolor: "background.paper",
-              "&:hover": {
-                bgcolor: "background.paper",
-              },
-              height: 45,
-            },
-          }}
-          helperText={error}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 2,
-            },
-          }}
-        />
+        {quickTimeOptions.map((option) => {
+          const isSelected =
+            option.value === "custom" ? isCustom : inputValue === option.value;
 
-        <Collapse
-          in={showQuickPicks}
-          sx={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            right: 0,
-            zIndex: 1,
-            mt: 0.5,
-            bgcolor: "background.paper",
-            borderRadius: 2,
-            boxShadow: 3,
-            overflow: "hidden",
-          }}
-        >
-          <Stack
-            direction="row"
-            sx={{
-              p: 1.5,
-              flexWrap: "wrap",
-              gap: 1,
-            }}
-          >
-            {quickTimeOptions.map((option) => (
-              <Chip
-                key={option.label}
-                label={option.label}
-                onClick={() => handleQuickOptionClick(option.value)}
-                color={inputValue === option.value ? "primary" : "default"}
-                variant={inputValue === option.value ? "filled" : "outlined"}
-                sx={{
-                  borderRadius: 1.5,
-                  transition: "all 0.2s ease-in-out",
-                  flex: {
-                    xs: "1 0 calc(50% - 8px)",
-                    sm: "0 1 auto",
-                  },
-                  "&:hover": {
-                    bgcolor:
-                      inputValue === option.value
-                        ? "primary.main"
-                        : "action.hover",
-                    transform: "translateY(-1px)",
-                  },
-                }}
-              />
-            ))}
-          </Stack>
-        </Collapse>
-      </Box>
+          return (
+            <Chip
+              key={option.label}
+              label={option.label}
+              onClick={() => handleQuickOptionClick(option)}
+              color={isSelected ? "primary" : "default"}
+              variant={isSelected ? "filled" : "outlined"}
+              sx={{
+                borderRadius: "16px",
+                transition: "all 0.2s ease-in-out",
+                "&:hover": {
+                  transform: "translateY(-1px)",
+                  boxShadow: 1,
+                },
+              }}
+            />
+          );
+        })}
+      </Stack>
     </Box>
   );
 };
