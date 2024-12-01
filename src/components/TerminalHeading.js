@@ -9,7 +9,7 @@ import RouteIcon from "@mui/icons-material/Route";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
-
+import { Bus } from "lucide-react";
 // Styled Components to match navbar design system
 const StyledPaper = styled(Paper)(({ theme }) => ({
   maxWidth: "1100px",
@@ -127,15 +127,12 @@ export default function TerminalHeading({ terminalId }) {
         >
           <Box sx={{ flex: 1 }}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-              <DirectionsBusIcon
-                sx={{
+              <Bus
+                size={48}
+                style={{
                   color: "white",
-                  fontSize: "2.5rem",
-                  mr: 2,
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    transform: "scale(1.1)",
-                  },
+                  marginRight: "10px",
+                  transition: "transform 0.3s ease",
                 }}
               />
               <Typography
@@ -143,7 +140,7 @@ export default function TerminalHeading({ terminalId }) {
                 sx={{
                   fontWeight: "bold",
                   color: "white",
-                  fontSize: { xs: "1.75rem", sm: "2rem" },
+                  fontSize: { xs: "1.5rem", sm: "1.75rem" },
                   background:
                     "linear-gradient(45deg, #fff, rgba(255,255,255,0.8))",
                   backgroundClip: "text",

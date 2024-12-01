@@ -12,7 +12,8 @@ import {
   where,
 } from "firebase/firestore";
 
-const OneTerminalPage = ({ params }) => {
+const OneTerminalPage = ({ params, searchParams }) => {
+  const { size } = searchParams;
   const [id, setId] = useState(null);
   const [busCompanies, setBusCompanies] = useState([]);
   const [terminalHeadingName, setTerminalHeadingName] = useState("");
@@ -20,7 +21,7 @@ const OneTerminalPage = ({ params }) => {
   useEffect(() => {
     if (params.id) {
       setId(params.id);
-      console.log("Terminal id:", params.id);
+      // console.log("Terminal id:", params.id);
 
       const fetchData = async () => {
         const locationRef = doc(db, "locations", params.id);
@@ -87,6 +88,7 @@ const OneTerminalPage = ({ params }) => {
     <div>
       <OneTerminal
         id={id}
+        size={size}
         busCompanies={busCompanies}
         terminalHeadingName={terminalHeadingName}
       />

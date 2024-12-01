@@ -164,10 +164,10 @@ const CurrentWeather = ({ terminalId }) => {
               />
             </Grid>
             <Grid item>
-              <Typography variant={isMobile ? "h4" : "h2"} color="white">
+              <Typography variant={isMobile ? "h4" : "h3"} color="white">
                 {weatherData.temperature}°C
               </Typography>
-              <Typography variant="body2" color="white">
+              <Typography variant="body3" color="white">
                 Feels like {weatherData.feelsLike}°C
               </Typography>
             </Grid>
