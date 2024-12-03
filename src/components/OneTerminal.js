@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -7,20 +5,20 @@ import {
   Paper,
   Select,
   MenuItem,
-  Chip,
   Typography,
-  Button,
+  IconButton,
   CircularProgress,
 } from "@mui/material";
 import TerminalHeading from "./TerminalHeading";
 import BusList from "./BusList";
-import WeatherHeading from "./WeatherHeading";
 import WeatherForecast from "./WeatherForecast";
 import Departure from "./OverlayDepature";
 import Price from "./Price";
 import TimeChip from "./TimeChip";
+import CloseIcon from "@mui/icons-material/Close";
+import { Bus } from "lucide-react";
 
-export default function OneTerminal({ busCompanies, id }) {
+export default function OneTerminal({ busCompanies, id, size }) {
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [selectedCity, setSelectedCity] = useState("");
@@ -29,20 +27,17 @@ export default function OneTerminal({ busCompanies, id }) {
   const handleViewSchedules = (company) => {
     setSelectedBus(company);
     setIsOverlayOpen(true);
-    setSelectedCity(company.schedules.from); // default city selection to 'from'
+    setSelectedCity(company.schedules.from);
   };
 
-  // Handler for day change
   const handleDayChange = (event) => {
     setSelectedDay(event.target.value);
   };
 
-  // Close overlay handler
   const handleCloseOverlay = () => {
     setIsOverlayOpen(false);
   };
 
-  // Function to display times
   const displayTimes = (times) => {
     const sortedTimes = times.sort((a, b) => (a < b ? -1 : 1));
     const midPoint = Math.ceil(sortedTimes.length / 2);
@@ -56,7 +51,6 @@ export default function OneTerminal({ busCompanies, id }) {
             <TimeChip time={time} key={index} />
           ))}
         </Grid>
-
         <Grid item xs={6}>
           {rightColumn.map((time, index) => (
             <TimeChip time={time} key={index} />
@@ -70,22 +64,34 @@ export default function OneTerminal({ busCompanies, id }) {
     <Box sx={{ maxWidth: 1000, padding: 3, mx: "auto", marginTop: 7 }}>
       <TerminalHeading terminalId={id} />
 
-      {busCompanies.length > 0 ? (
-        <BusList
-          busCompanies={busCompanies}
-          handleViewSchedules={handleViewSchedules}
-        />
+      {size > 0 ? (
+        busCompanies.length > 0 ? (
+          <BusList
+            busCompanies={busCompanies}
+            handleViewSchedules={handleViewSchedules}
+          />
+        ) : (
+          <Box sx={{ display: "flex", justifyContent: "center", margin: 3 }}>
+            <CircularProgress />
+          </Box>
+        )
       ) : (
-        <Box sx={{ display: "flex", justifyContent: "center", margin: 3 }}>
-          <CircularProgress /> {/* Loading spinner */}
+        <Box sx={{ textAlign: "center", marginTop: 5, marginBottom: 25 }}>
+          <Typography variant="h6" sx={{ marginBottom: 2 }}>
+            🚍 We are building something amazing!
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            While there are not any bus schedules here yet, stay tuned—bus
+            companies will be joining soon! Our goal is to make your travel
+            planning even easier. Check back later for updates!
+          </Typography>
         </Box>
       )}
-      {/* <WeatherHeading /> */}
+
       <Box sx={{ marginBottom: 3 }}>
         <WeatherForecast terminalId={id} />
       </Box>
 
-      {/* Bus Schedule Overlay */}
       {isOverlayOpen && selectedBus && (
         <Box
           sx={{
@@ -94,14 +100,14 @@ export default function OneTerminal({ busCompanies, id }) {
             left: 0,
             width: "100%",
             height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.6)", // Slightly darker overlay
-            zIndex: 1200, // Elevate above other content
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            zIndex: 1200,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            backdropFilter: "blur(5px)", // Adds a blur effect for elegance
+            backdropFilter: "blur(5px)",
             padding: 2,
-            transition: "all 0.3s ease-in-out", // Smooth transition for the overlay
+            transition: "all 0.3s ease-in-out",
           }}
         >
           <Paper
@@ -109,14 +115,28 @@ export default function OneTerminal({ busCompanies, id }) {
             sx={{
               padding: 3,
               maxWidth: 500,
-              borderRadius: "16px", // Soft rounded edges
-              animation: "fadeIn 0.5s ease-in-out", // Smooth appearance animation
+              borderRadius: "16px",
+              animation: "fadeIn 0.5s ease-in-out",
+              position: "relative",
             }}
           >
-            {/* Departure Heading */}
+            <IconButton
+              onClick={handleCloseOverlay}
+              sx={{
+                position: "absolute",
+                top: 2,
+                right: 2,
+                color: "black",
+                fontSize: "30px",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  borderRadius: "50%",
+                },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Departure destination={selectedBus.schedules.to} />
-
-            {/* Day Selection */}
             <Box mb={3}>
               <Typography>Select Day:</Typography>
               <Select
@@ -140,40 +160,16 @@ export default function OneTerminal({ busCompanies, id }) {
                 ))}
               </Select>
             </Box>
-
-            {/* Schedule and Price */}
             {selectedCity && (
               <Box>
-                {/* Display Times */}
                 {displayTimes(
                   selectedDay === "Saturday" || selectedDay === "Sunday"
                     ? selectedBus.schedules.times.weekend
-                    : selectedBus.schedules.times.weekdays
+                    : selectedBus.schedules.times.weekdays,
                 )}
-
-                {/* Display Price */}
                 <Price price={selectedBus.schedules.price} />
               </Box>
             )}
-
-            {/* Close Button */}
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleCloseOverlay}
-              fullWidth
-              sx={{
-                color: "black",
-                marginTop: 3,
-                backgroundColor: "white",
-                textTransform: "none",
-                "&:hover": {
-                  backgroundColor: "#e64a19",
-                },
-              }}
-            >
-              Close
-            </Button>
           </Paper>
         </Box>
       )}

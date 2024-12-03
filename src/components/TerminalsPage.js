@@ -128,7 +128,12 @@ export default function TerminalsPage({ terminals }) {
                   </Typography>
                   <StyledButton
                     component={Link}
-                    href={`/terminal/${terminal.id}`}
+                    href={{
+                      pathname: `/terminal/${terminal.id}`,
+                      query: {
+                        size: terminal.services.length,
+                      },
+                    }}
                   >
                     View Details
                   </StyledButton>
