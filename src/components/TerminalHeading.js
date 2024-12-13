@@ -115,7 +115,7 @@ export default function TerminalHeading({ terminalId }) {
   return (
     <StyledPaper elevation={0}>
       <BackButton />
-      <Box sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
+      <Box sx={{ p: { xs: 3, sm: 4, md: 5 }, pt: { xs: 0, sm: 0, md: 0 } }}>
         {/* Header Section */}
         <Box
           sx={{

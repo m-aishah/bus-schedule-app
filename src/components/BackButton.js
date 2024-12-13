@@ -7,8 +7,8 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: "rgba(255, 255, 255, 0.9)",
   padding: theme.spacing(1),
   transition: "all 0.3s ease",
-  borderRadius: "25px",
-  backgroundColor: "rgba(201,48,121, 0.6)",
+  borderRadius: "5px",
+  backgroundColor: "rgba(90,138,228, 1)",
   backdropFilter: "blur(10px)",
   border: "1px solid rgba(255, 255, 255, 0.2)",
   marginBottom: theme.spacing(2),
@@ -32,7 +32,7 @@ const BackButton = () => {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <StyledIconButton
-        sx={{ padding: 0, paddingRight: 1, margin: 0 }}
+        sx={{ padding: 0, paddingRight: 1, marginLeft: 2, marginTop: 2 }}
         onClick={() => router.back()}
         aria-label="go back"
       >
