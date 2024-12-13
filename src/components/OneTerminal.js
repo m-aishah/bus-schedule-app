@@ -16,8 +16,7 @@ import Departure from "./OverlayDepature";
 import Price from "./Price";
 import TimeChip from "./TimeChip";
 import CloseIcon from "@mui/icons-material/Close";
-import { Bus } from "lucide-react";
-
+import BackButton from "./BackButton";
 export default function OneTerminal({ busCompanies, id, size }) {
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedDay, setSelectedDay] = useState("Monday");
@@ -62,6 +61,7 @@ export default function OneTerminal({ busCompanies, id, size }) {
 
   return (
     <Box sx={{ maxWidth: 1000, padding: 3, mx: "auto", marginTop: 7 }}>
+      {/* <BackButton /> */}
       <TerminalHeading terminalId={id} />
 
       {size > 0 ? (
