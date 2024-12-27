@@ -35,6 +35,7 @@ const BackButton = () => {
         sx={{ padding: 0, paddingRight: 1, marginLeft: 2, marginTop: 2 }}
         onClick={() => router.back()}
         aria-label="go back"
+        z
       >
         <ArrowBackIcon />
         <StyledTypography>Back</StyledTypography>

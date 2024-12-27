@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Grid,
@@ -8,20 +8,52 @@ import {
   Typography,
   IconButton,
   CircularProgress,
+  Stack,
 } from "@mui/material";
 import TerminalHeading from "./TerminalHeading";
 import BusList from "./BusList";
 import WeatherForecast from "./WeatherForecast";
-import Departure from "./OverlayDepature";
-import Price from "./Price";
 import TimeChip from "./TimeChip";
 import CloseIcon from "@mui/icons-material/Close";
-import BackButton from "./BackButton";
+import RouteHeader from "./RouterHeader";
 export default function OneTerminal({ busCompanies, id, size }) {
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [selectedCity, setSelectedCity] = useState("");
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+
+  const preventTouchMove = useCallback((e) => {
+    e.preventDefault();
+  }, []);
+
+  useEffect(() => {
+    if (isOverlayOpen) {
+      const scrollPosition = window.pageYOffset;
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollPosition}px`;
+      document.body.style.width = "100%";
+      document.body.addEventListener("touchmove", preventTouchMove, {
+        passive: false,
+      });
+    } else {
+      const scrollPosition = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.overflow = "unset";
+      document.body.style.width = "";
+      window.scrollTo(0, parseInt(scrollPosition || "0") * -1);
+      document.body.removeEventListener("touchmove", preventTouchMove);
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.removeEventListener("touchmove", preventTouchMove);
+    };
+  }, [isOverlayOpen, preventTouchMove]);
 
   const handleViewSchedules = (company) => {
     setSelectedBus(company);
@@ -61,7 +93,6 @@ export default function OneTerminal({ busCompanies, id, size }) {
 
   return (
     <Box sx={{ maxWidth: 1000, padding: 3, mx: "auto", marginTop: 7 }}>
-      {/* <BackButton /> */}
       <TerminalHeading terminalId={id} />
 
       {size > 0 ? (
@@ -98,16 +129,25 @@ export default function OneTerminal({ busCompanies, id, size }) {
             position: "fixed",
             top: 0,
             left: 0,
+            right: 0,
+            bottom: 0,
             width: "100%",
             height: "100%",
             backgroundColor: "rgba(0, 0, 0, 0.6)",
             zIndex: 1200,
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "flex-start",
             backdropFilter: "blur(5px)",
-            padding: 2,
+            padding: { xs: 1, sm: 2 },
             transition: "all 0.3s ease-in-out",
+            overflow: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+          onTouchMove={(e) => {
+            if (e.target === e.currentTarget) {
+              e.preventDefault();
+            }
           }}
         >
           <Paper
@@ -115,9 +155,17 @@ export default function OneTerminal({ busCompanies, id, size }) {
             sx={{
               padding: 3,
               maxWidth: 500,
+              width: "100%",
+              maxHeight: "90vh",
+              overflow: "auto",
               borderRadius: "16px",
               animation: "fadeIn 0.5s ease-in-out",
               position: "relative",
+              margin: { xs: "10px", sm: "20px" },
+              marginBottom: { xs: "5px" },
+              paddingBottom: { xs: "5px" },
+              WebkitOverflowScrolling: "touch",
+              msOverflowStyle: "-ms-autohiding-scrollbar",
             }}
           >
             <IconButton
@@ -128,6 +176,8 @@ export default function OneTerminal({ busCompanies, id, size }) {
                 right: 2,
                 color: "black",
                 fontSize: "30px",
+                // backgroundColor: "rgb(245,245,245)",
+                zIndex: 1,
                 "&:hover": {
                   backgroundColor: "rgba(255, 255, 255, 0.2)",
                   borderRadius: "50%",
@@ -136,40 +186,58 @@ export default function OneTerminal({ busCompanies, id, size }) {
             >
               <CloseIcon />
             </IconButton>
-            <Departure destination={selectedBus.schedules.to} />
-            <Box mb={3}>
-              <Typography>Select Day:</Typography>
-              <Select
-                value={selectedDay}
-                onChange={handleDayChange}
-                fullWidth
-                sx={{ marginBottom: 2 }}
+
+            <Stack spacing={2}>
+              <Box
+                sx={{
+                  marginRight: "10px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 2,
+                }}
               >
-                {[
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                  "Sunday",
-                ].map((day) => (
-                  <MenuItem key={day} value={day}>
-                    {day}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
-            {selectedCity && (
-              <Box>
-                {displayTimes(
-                  selectedDay === "Saturday" || selectedDay === "Sunday"
-                    ? selectedBus.schedules.times.weekend
-                    : selectedBus.schedules.times.weekdays,
-                )}
-                <Price price={selectedBus.schedules.price} />
+                <RouteHeader
+                  from={selectedBus.schedules.from}
+                  to={selectedBus.schedules.to}
+                  price={selectedBus.schedules.price}
+                />
               </Box>
-            )}
+
+              <Box>
+                <Typography>Select Day:</Typography>
+                <Select
+                  value={selectedDay}
+                  onChange={handleDayChange}
+                  fullWidth
+                  sx={{ marginBottom: 2 }}
+                >
+                  {[
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday",
+                  ].map((day) => (
+                    <MenuItem key={day} value={day}>
+                      {day}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Box>
+
+              {selectedCity && (
+                <Box>
+                  {displayTimes(
+                    selectedDay === "Saturday" || selectedDay === "Sunday"
+                      ? selectedBus.schedules.times.weekend
+                      : selectedBus.schedules.times.weekdays,
+                  )}
+                </Box>
+              )}
+            </Stack>
           </Paper>
         </Box>
       )}

@@ -8,11 +8,10 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import CurrencyLiraIcon from "@mui/icons-material/CurrencyLira";
-import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import LocalPhoneRoundedIcon from "@mui/icons-material/LocalPhoneRounded";
 import TrendingFlatRoundedIcon from "@mui/icons-material/TrendingFlatRounded";
 import { styled } from "@mui/material/styles";
+import { MapPin as LocationIcon } from "lucide-react";
 
 const groupByDestination = (busCompanies) => {
   return busCompanies.reduce((acc, company) => {
@@ -106,13 +105,8 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
               boxShadow: "0 2px 12px rgba(148, 163, 184, 0.12)",
             }}
           >
-            <LocationOnRoundedIcon
-              sx={{
-                color: colors.primary,
-                marginRight: 1,
-                fontSize: "1.5rem",
-              }}
-            />
+            <LocationIcon size={22} color={colors.primary} />
+
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography
                 variant="h6"
@@ -218,8 +212,7 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                               fontSize: { xs: "1.2rem", sm: "1.35rem" },
                             }}
                           >
-                            <CurrencyLiraIcon />
-                            {company.schedules.price}
+                            {company.schedules.price}TL
                           </Typography>
                           <StyledButton
                             onClick={(e) => {
