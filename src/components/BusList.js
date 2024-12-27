@@ -13,6 +13,10 @@ import TrendingFlatRoundedIcon from "@mui/icons-material/TrendingFlatRounded";
 import { styled } from "@mui/material/styles";
 import { MapPin as LocationIcon } from "lucide-react";
 
+const setFirstLetterToUppercase = (word) => {
+  if (!word) return;
+  return word.charAt(0).toUpperCase() + word.slice(1);
+};
 const groupByDestination = (busCompanies) => {
   return busCompanies.reduce((acc, company) => {
     const destination = company.schedules.to;
@@ -45,7 +49,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 const StyledButton = styled(Button)(({ theme }) => ({
   borderRadius: "25px",
   textTransform: "none",
-  padding: "10px 24px",
+  padding: "10px 20px",
   transition: "all 0.3s ease",
   color: colors.primary,
   background: "white",
@@ -118,10 +122,9 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                   fontSize: { xs: "1.1rem", sm: "1.25rem" },
                 }}
               >
-                {groupedBusCompanies[
-                  destination
-                ][0].schedules.from[0].toUpperCase() +
-                  groupedBusCompanies[destination][0].schedules.from.slice(1)}
+                {setFirstLetterToUppercase(
+                  groupedBusCompanies[destination][0].schedules.from,
+                )}
               </Typography>
               <TrendingFlatRoundedIcon
                 sx={{
@@ -139,7 +142,7 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                   fontSize: { xs: "1.1rem", sm: "1.25rem" },
                 }}
               >
-                {destination[0].toUpperCase() + destination.slice(1)}
+                {setFirstLetterToUppercase(destination)}
               </Typography>
             </Box>
           </Box>
@@ -159,11 +162,18 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                             fontWeight: "700",
                             color: colors.text,
                             marginBottom: 1,
-                            fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                            fontSize: { xs: "1rem", sm: "1.25rem" }, // Smaller font on mobile
                           }}
                         >
-                          {company.name[0].toUpperCase() +
-                            company.name.slice(1)}
+                          {setFirstLetterToUppercase(
+                            company.name.split("_")[0],
+                          )}
+
+                          {company.name.split("_")[1] &&
+                            " " +
+                              setFirstLetterToUppercase(
+                                company.name.split("_")[1],
+                              )}
                         </Typography>
 
                         {company.phone !== "N/A" && (
@@ -171,21 +181,29 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              gap: 1,
+                              gap: 0.8,
                             }}
                           >
                             <PhoneButton
                               onClick={() => handlePhoneClick(company.phone)}
                               aria-label="call company"
+                              sx={{
+                                width: { xs: 28, sm: 36 }, // Smaller button on mobile
+                                height: { xs: 28, sm: 36 },
+                              }}
                             >
-                              <LocalPhoneRoundedIcon />
+                              <LocalPhoneRoundedIcon
+                                sx={{
+                                  fontSize: { xs: "1.2rem", sm: "1.2rem" }, // Smaller icon
+                                }}
+                              />
                             </PhoneButton>
                             <Typography
                               variant="body1"
                               sx={{
                                 color: colors.textLight,
                                 fontWeight: 500,
-                                fontSize: "0.95rem",
+                                fontSize: { xs: "0.85rem", sm: "0.95rem" }, // Smaller text on mobile
                               }}
                             >
                               {company.phone}
@@ -201,7 +219,7 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "flex-end",
-                            gap: 2,
+                            gap: 1.5, // Adjusted gap on mobile
                           }}
                         >
                           <Typography
@@ -209,15 +227,21 @@ export default function BusList({ busCompanies, handleViewSchedules }) {
                             sx={{
                               color: colors.primary,
                               fontWeight: "700",
-                              fontSize: { xs: "1.2rem", sm: "1.35rem" },
+                              fontSize: { xs: "1rem", sm: "1.35rem" }, // Smaller price text on mobile
                             }}
                           >
-                            {company.schedules.price}TL
+                            {company.schedules.price === "0"
+                              ? "Free"
+                              : `${company.schedules.price}TL`}
                           </Typography>
                           <StyledButton
                             onClick={(e) => {
                               e.stopPropagation();
                               handleViewSchedules(company);
+                            }}
+                            sx={{
+                              fontSize: { xs: "0.85rem", sm: "0.85rem" }, // Smaller button text on mobile
+                              padding: { xs: "5px 12px", sm: "6px 12px" }, // Adjusted padding
                             }}
                           >
                             Timetable

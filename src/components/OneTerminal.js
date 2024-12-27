@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -16,44 +16,31 @@ import WeatherForecast from "./WeatherForecast";
 import TimeChip from "./TimeChip";
 import CloseIcon from "@mui/icons-material/Close";
 import RouteHeader from "./RouterHeader";
+
 export default function OneTerminal({ busCompanies, id, size }) {
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [selectedCity, setSelectedCity] = useState("");
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
-  const preventTouchMove = useCallback((e) => {
-    e.preventDefault();
-  }, []);
-
+  // Lock/unlock body scroll when overlay opens/closes
   useEffect(() => {
     if (isOverlayOpen) {
-      const scrollPosition = window.pageYOffset;
-      document.body.style.overflow = "hidden";
+      // Store current scroll position and lock body
+      const scrollY = window.scrollY;
       document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollPosition}px`;
       document.body.style.width = "100%";
-      document.body.addEventListener("touchmove", preventTouchMove, {
-        passive: false,
-      });
-    } else {
-      const scrollPosition = document.body.style.top;
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.overflow = "unset";
-      document.body.style.width = "";
-      window.scrollTo(0, parseInt(scrollPosition || "0") * -1);
-      document.body.removeEventListener("touchmove", preventTouchMove);
-    }
+      document.body.style.top = `-${scrollY}px`;
 
-    return () => {
-      document.body.style.overflow = "unset";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      document.body.removeEventListener("touchmove", preventTouchMove);
-    };
-  }, [isOverlayOpen, preventTouchMove]);
+      // Restore scroll position when component unmounts or overlay closes
+      return () => {
+        document.body.style.position = "";
+        document.body.style.width = "";
+        document.body.style.top = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOverlayOpen]);
 
   const handleViewSchedules = (company) => {
     setSelectedBus(company);
@@ -65,9 +52,10 @@ export default function OneTerminal({ busCompanies, id, size }) {
     setSelectedDay(event.target.value);
   };
 
-  const handleCloseOverlay = () => {
+  const handleCloseOverlay = useCallback((e) => {
+    e?.preventDefault?.();
     setIsOverlayOpen(false);
-  };
+  }, []);
 
   const displayTimes = (times) => {
     const sortedTimes = times.sort((a, b) => (a < b ? -1 : 1));
@@ -125,6 +113,8 @@ export default function OneTerminal({ busCompanies, id, size }) {
 
       {isOverlayOpen && selectedBus && (
         <Box
+          component="div"
+          onClick={handleCloseOverlay}
           sx={{
             position: "fixed",
             top: 0,
@@ -142,15 +132,10 @@ export default function OneTerminal({ busCompanies, id, size }) {
             padding: { xs: 1, sm: 2 },
             transition: "all 0.3s ease-in-out",
             overflow: "auto",
-            WebkitOverflowScrolling: "touch",
-          }}
-          onTouchMove={(e) => {
-            if (e.target === e.currentTarget) {
-              e.preventDefault();
-            }
           }}
         >
           <Paper
+            onClick={(e) => e.stopPropagation()}
             elevation={6}
             sx={{
               padding: 3,
@@ -162,10 +147,12 @@ export default function OneTerminal({ busCompanies, id, size }) {
               animation: "fadeIn 0.5s ease-in-out",
               position: "relative",
               margin: { xs: "10px", sm: "20px" },
-              marginBottom: { xs: "5px" },
-              paddingBottom: { xs: "5px" },
-              WebkitOverflowScrolling: "touch",
-              msOverflowStyle: "-ms-autohiding-scrollbar",
+              marginTop: { xs: "20px", sm: "40px" },
+              marginBottom: { xs: "20px" },
+              "@keyframes fadeIn": {
+                from: { opacity: 0, transform: "translateY(-20px)" },
+                to: { opacity: 1, transform: "translateY(0)" },
+              },
             }}
           >
             <IconButton
@@ -176,7 +163,6 @@ export default function OneTerminal({ busCompanies, id, size }) {
                 right: 2,
                 color: "black",
                 fontSize: "30px",
-                // backgroundColor: "rgb(245,245,245)",
                 zIndex: 1,
                 "&:hover": {
                   backgroundColor: "rgba(255, 255, 255, 0.2)",
