@@ -3,13 +3,14 @@ import Link from "next/link";
 import { Box, Paper, Typography, CircularProgress } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import MapIcon from "@mui/icons-material/Map";
-import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import RouteIcon from "@mui/icons-material/Route";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Bus } from "lucide-react";
+import BackButton from "./BackButton";
+
 // Styled Components to match navbar design system
 const StyledPaper = styled(Paper)(({ theme }) => ({
   maxWidth: "1100px",
@@ -113,7 +114,8 @@ export default function TerminalHeading({ terminalId }) {
 
   return (
     <StyledPaper elevation={0}>
-      <Box sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
+      <BackButton />
+      <Box sx={{ p: { xs: 3, sm: 4, md: 5 }, pt: { xs: 0, sm: 0, md: 0 } }}>
         {/* Header Section */}
         <Box
           sx={{

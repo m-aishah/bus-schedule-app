@@ -27,6 +27,7 @@ import {
   Info as InfoIcon,
 } from "lucide-react";
 import MapContainer from "./MapContainer";
+import Price from "../Price";
 
 const RouteHeader = ({ from, to, time, price }) => {
   const theme = useTheme();
