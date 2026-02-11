@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bus Schedule App – Northern Cyprus
 
-## Getting Started
+## Why We Built This
 
-First, run the development server:
+We are two students who got tired of one very specific problem.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Not being able to find bus schedules in Northern Cyprus.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Every time we wanted to go somewhere, we had to text friends, ask around, and hope someone knew the schedule. Sometimes we would just risk it and hope for the best.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+It got annoying very fast.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+So we thought, why not just build a simple website where this information lives in one place?
 
-## Learn More
+And maybe even let people upload the information they have.
 
-To learn more about Next.js, take a look at the following resources:
+That is how this project started.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## What This Is
 
-## Deploy on Vercel
+This is a simple web app where bus schedule information can be viewed and shared.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+It is not perfect.  
+It is not fancy.  
+But it works.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+We built this when we had limited technical experience, and we learned a lot by just building and figuring things out as we went.
+
+---
+
+## Tech Stack
+
+We used:
+
+- Next.js  
+- Firebase  
+- Material UI  
+- Vercel for deployment  
+
+The goal was not to overengineer anything. We just wanted something usable and accessible.
+
+---
+
+## The Vision
+
+The idea is simple:
+
+- Centralize bus schedule information  
+- Make it easy to access  
+- Allow people to contribute updates  
+- Reduce the "ask everyone and hope for the best" situation  
+
+If even a few students avoid getting stranded because of this, then it was worth building.
+
+---
+
+## Contributing
+
+If you:
+
+- Live in Northern Cyprus  
+- Have accurate bus schedule information  
+- Want to improve the UI  
+- Want to improve performance  
+- Or just want to contribute  
+
+Feel free to open a pull request or suggest improvements.
+
+We would genuinely appreciate it.
+
+---
+
+## Final Thoughts
+
+This project came from a real everyday inconvenience.
+
+It is simple.  
+It is student built.  
+It is practical.
+
+And we are proud of it.
